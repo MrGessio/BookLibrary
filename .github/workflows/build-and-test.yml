@@ -1,0 +1,33 @@
+name: build-and-test
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ '**' ]
+  workflow_dispatch:
+
+env:
+  BUILD_DIR: ${{ github.workspace }}/_build
+
+jobs:
+  build:
+    runs-on: [ 'ubuntu-24.04' ]
+
+    steps:
+      - name: pull-repositiory
+        uses: actions/checkout@v4.2.2
+
+      - name: cmake-setup
+        run: |
+           sudo snap install cmake --channel=3.31 --classic
+
+      - name: project-build-generation
+        run: |
+          cd ${{ github.workspace }}
+          cmake -B ${{ env.BUILD_DIR }} -S ${{ github.workspace }}
+
+      - name: build
+        run: |
+         cd ${{ github.workspace }}
+         cmake --build ${{ env.BUILD_DIR }}
