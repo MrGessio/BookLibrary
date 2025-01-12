@@ -3,85 +3,15 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "Book.h"
+#include "Logger.h"
+#include "User.h"
+#include "Admin.h"
 
-std::fstream libraryDoc;
-
-class Book {
-
-private:
-    std::string title;
-    std::string author;
-    int year;
-    bool isAvailable;
-
-public:
-    Book(std::string t, std::string a, int y) {
-        title = t;
-        author = a;
-        year = y;
-        isAvailable = true;
-    }
-    
-    void aboutBook() {
-        std::cout << "Title: "<< title<< " Author: "<< author<< ", year: "<< year<< ", Available: "<< isAvailable;
-        libraryDoc.open("library.txt", std::ios::in); //read
-        if (libraryDoc.is_open()) {
-       // show exact one
-            libraryDoc.close();
-        }
-    }
-
-    std::string getTitle() {
-        return title;
-    }
-    std::string getAuthor() {
-        return author;
-    }
-    int getYear() {
-        return year;
-    }
-    //avaiable 
-
-    void setTitle(std::string t) {
-        title = t;
-    }
-    void setAuthor(std::string a) {
-        author = a;
-    }
-    void setYear(int y) {
-        year = y;
-    }
-    //Available
-    std::string dataToSave() {
-        return title + " ," + author + " ," + std::to_string(year);
-    }
-};
+Logger 
 
 
 
-class Logger {
-
-private:
-    std::string name, surname, username, password;
-    //functions: LogIN
-
-public:
-    void logIn() {
-        std::cout << "write your username" << std::endl;
-        std::cin >> username;
-        std::cout << "write your password" << std::endl;
-        std::cin >> password;
-    }
-
-    std::string getUsername() { 
-        return username;
-    }
-
-    std::string getPassword() {
-        return password;
-    }
-
-};
 class User  //user as someoe who uses the library
 {
     void searchBook() {
@@ -192,6 +122,7 @@ class Reader //reader as someone who has an account excluding admin
         
         Logger log;
         Admin admin;
+        User user;
 
         int chosenNumber;
         char adminChoice;
@@ -205,14 +136,18 @@ class Reader //reader as someone who has an account excluding admin
 
         switch (chosenNumber) {
         case 1:
+            user.showBooks(); 
             break;
 
         case 2:
+            user.searchBook();
             break;
 
         case 3:
             log.logIn(); 
             //if username and password is admin and admin then admin stuff
+            
+            
             if (log.getUsername() == "admin" && log.getPassword() == "admin") {
                 std::cout << "you can (a)dd or (d)elete books" << std::endl;
                 std::cout << "Press...";

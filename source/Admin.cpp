@@ -1,0 +1,64 @@
+#include "Admin.h"
+
+extern std::fstream libraryDoc;
+
+void Admin::addBook() {
+    std::string title, author;
+    int year;
+
+    std::cout << "Write the title: ";
+    std::cin >> title;
+    std::cout << "Write the author: ";
+    std::cin >> author;
+    std::cout << "Write the year: ";
+    std::cin >> year;
+
+ Book newBook(title, author, year);
+
+    libraryDoc.open("library.txt", std::ios::app);
+    if (libraryDoc.is_open()) {
+        libraryDoc << newBook.dataToSave() << std::endl;
+        libraryDoc.close();
+        std::cout << "Book added: " << title << ", " << author << ", " << year << std::endl;
+    } else {
+        std::cout << "Error, couldn't open the file." << std::endl;
+    }
+}
+void Admin::deleteBook() {
+    std::string bookToDelete;
+    std::cout << "Enter the title of the book you want to delete: ";
+    std::cin >> bookToDelete;
+
+    libraryDoc.open("library.txt", std::ios::in);
+    std::fstream tempFile("libraryTemp.txt", std::ios::out);
+
+    if (!libraryDoc.is_open() || !tempFile.is_open()) {
+        std::cout << "Error opening files." << std::endl;
+        return;
+    }
+
+    std::string line;
+    bool foundToDelete = false;
+    while (std::getline(libraryDoc, line)) {
+        if (line.find(bookToDelete) != std::string::npos) {
+            foundToDelete = true;
+            std::cout << "Deleting book: " << line << std::endl;
+            continue;
+        }
+        tempFile << line << std::endl;
+    }
+    libraryDoc.close();
+    tempFile.close();
+
+    if (foundToDelete) {
+        if (std::remove("library.txt") != 0) {
+            std::cout << "Error deleting the original file." << std::endl;
+        } else if (std::rename("libraryTemp.txt", "library.txt") != 0) {
+            std::cout << "Error renaming the temporary file." << std::endl;
+        } else {
+            std::cout << "Book deleted." << std::endl;
+        }
+    } else {
+        std::cout << "Book not found." << std::endl;
+    }
+}
