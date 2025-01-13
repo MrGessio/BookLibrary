@@ -1,14 +1,16 @@
-#define LOGGER_H
+#pragma once
 
 #include <string>
 
 class Logger{
 
-private:
-    std::string username, password;
 
 public:
     void logIn();
     std::string getUsername();
     std::string getPassword();
+
+    
+private:
+    std::string username, password;
 };

@@ -1,4 +1,4 @@
-#define READER_H
+#pragma once
 
 #include "User.h"
 

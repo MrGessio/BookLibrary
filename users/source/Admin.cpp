@@ -1,17 +1,36 @@
-#include "Admin.h"
+#include "../include/Admin.h"
+#include <limits>
 
 extern std::fstream libraryDoc;
 
+
+ int Admin::GetValidYear(){
+
+        int year;
+        while(true){
+            std::cout << "Write the year: ";
+            if (std::cin >> year){
+                if (year >0) return year;
+                else std::cout << "Incorrect year" << std::endl;
+            }
+            else{
+                std::cout << "This is incorrect, type a number" << std::endl;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+        }
+
+    }
+
 void Admin::addBook() {
     std::string title, author;
-    int year;
-
+   
     std::cout << "Write the title: ";
-    std::cin >> title;
+    std::cin.ignore();
+    std::getline(std::cin, title);
     std::cout << "Write the author: ";
-    std::cin >> author;
-    std::cout << "Write the year: ";
-    std::cin >> year;
+    std::getline(std::cin, author);
+    int year = GetValidYear();
 
  Book newBook(title, author, year);
 

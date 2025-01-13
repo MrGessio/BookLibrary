@@ -1,4 +1,4 @@
-#define ADMIN_H
+#pragma once
 
 #include "User.h"
 #include "Book.h"
@@ -9,4 +9,5 @@ class Admin : public User {
 public:
     void addBook();
     void deleteBook();
+    int GetValidYear();
 };
