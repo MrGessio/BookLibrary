@@ -1,4 +1,4 @@
-#define USER_H
+#pragma once
 
 #include <string>
 #include <fstream>

@@ -5,8 +5,9 @@ add_executable(out
   main.cpp
   source/Book.cpp
   source/Logger.cpp
-  source/User.cpp
-  source/Admin.cpp
+  users/source/User.cpp
+  users/source/Admin.cpp
+  users/source/Reader.cpp
   )
-
+target_include_directories(out PUBLIC ${PROJECT_SOURCE_DIR}/users/include ${PROJECT_SOURCE_DIR}/include)
 set_property(TARGET out PROPERTY COMPILE_WARNING_AS_ERROR ON)

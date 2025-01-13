@@ -1,19 +1,19 @@
-#include "Book.h"
+#include "../include/Book.h"
 #include <iostream>
 #include <fstream>
 
 std::fstream libraryDoc;
 
-Book:Book(std::string t, std::string a, int y) {
+Book::Book(std::string t, std::string a, int y) {
         title = t;
         author = a;
         year = y;
-        isAvailable = true;
+        //isAvailable = true;
     }
 
-        void aboutBook() {
+        void Book::aboutBook() {
         std::cout << "Title: " << title << " Author: " << author << ", year: " << year
-                  << ", Available: " << isAvailable;
+                  << ", Available: " << isAvailable << std::endl;
         libraryDoc.open("library.txt", std::ios::in); //read
         if (libraryDoc.is_open()) {
        // show exact one
@@ -41,7 +41,9 @@ Book:Book(std::string t, std::string a, int y) {
         author = a;
     }
     void Book::setYear(int y) {
+        if (y > 0){
         year = y;
+        } else std::cerr << "Invalid year" << std::endl;
     }
     //Available
     std::string Book::dataToSave() {
