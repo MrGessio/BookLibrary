@@ -24,6 +24,7 @@ extern std::fstream libraryDoc;
 
 void Admin::addBook() {
     std::string title, author;
+    bool Availability;
    
     std::cout << "Write the title: ";
     std::cin.ignore();
@@ -31,6 +32,7 @@ void Admin::addBook() {
     std::cout << "Write the author: ";
     std::getline(std::cin, author);
     int year = GetValidYear();
+    Availability = true;
 
  Book newBook(title, author, year);
 
