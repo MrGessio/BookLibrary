@@ -4,6 +4,6 @@
 
 class Reader : public User {
 public:
-    void borrowBook();
-    void returnBook();
+    void BorrowBook();
+    void ReturnBook();
 };
