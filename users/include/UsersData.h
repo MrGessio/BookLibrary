@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+
 class UsersData {
 public:
     UsersData(const std::string &firstName, const std::string &lastName, const std::string &userName, const std::string &userPassword);

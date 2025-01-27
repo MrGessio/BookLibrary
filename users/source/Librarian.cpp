@@ -6,6 +6,7 @@
 #include "../include/Librarian.h"
 
 extern std::fstream libraryDoc;
+extern std::fstream usersDoc;
 
 void Librarian:: UpdateBook() {
      std::string bookToBeChanged;
@@ -46,47 +47,50 @@ void Librarian:: UpdateBook() {
 }
 
 void Librarian:: LoadUsers(){
-    users.clear(); //clears vector before loading data
-    std::ifstream inputFile("users.txt"); //open file
+   users.clear(); //clears vector before loading data
+   std::fstream usersDoc("users.txt", std::ios::in); 
 
-    if(!inputFile){
+    if(!usersDoc){
         std::cout << "Error, could not open the file" << std::endl;
         return;
     }
 
     UserInfo user;
-    while (inputFile >> user.username >> user.password >> user.firstname >> user.lastname){
+    while (usersDoc >> user.username >> user.password >> user.firstname >> user.lastname){
         users.push_back(user);
     }
 
-    inputFile.close();
+    usersDoc.close();
 }
 
 void Librarian:: SaveUsers(){
-    std::ofstream outputFile("users.txt");
+    std::ofstream usersDoc("users.txt", std::ios::out);
 
-    if(!outputFile){
-        std::cout << "Error. Could not open the file.";
+    if(!usersDoc){
+        std::cout << "Error. Could not open the file." << std::endl;
         return;
     }
 
     for(auto &user : users){
-        outputFile << user.username << " " << user.password << " " << user.firstname << " " << user.lastname << std::endl;
+        usersDoc << user.username << " " << user.password << " " << user.firstname << " " << user.lastname << std::endl;
     }
-    outputFile.close();
+    usersDoc.close();
 
 }
 
-void Librarian:: AddUser(const std::string &username, const std::string &password, const std::string &firstname, const std::string &lastname){
-    
+
+bool Librarian:: IsUsernameTaken(const std::string &username){
     LoadUsers();
-    //check if the user already exists
-    auto it = std::find_if(users.begin(), users.end(), [&username](const UserInfo &user){
+    auto it = std::find_if(users.begin(), users.end(), [&username](const UserInfo &user) {
         return user.username == username;
     });
+    return it != users.end(); 
+}
 
-    if (it != users.end()){
-        std::cout << "Error user named: " << username << " is already taken." << std::endl;
+void Librarian:: AddUser(const std::string &username, const std::string &password, const std::string &firstname, const std::string &lastname){
+
+    if (IsUsernameTaken(username)){
+        std::cout << "Error. Username: " << username << " is already taken." << std::endl;
         return;
     }
 
@@ -104,25 +108,30 @@ void Librarian::DeleteUser(const std::string &username){
 
     LoadUsers();
     auto it = std::find_if(users.begin(), users.end(), [&username](const UserInfo &user0){
-        return users.username == username;
+        return user0.username == username;
     });
 
     if (it != users.end()){
         users.erase(it); //delete user from the list
         SaveUsers();
 
-        std::cout << "User: " << username << " added correctly." << std::endl;
+        std::cout << "User: " << username << " deleted correctly." << std::endl;
     } else std::cout << "Error. User: " << username << " not found." << std::endl;
 
 }
 
 void Librarian::DisplayUsers(){
-    if(users.empty()) std::cout << "No users found." << std::endl;
+    LoadUsers();
+    std::cout << "Number of users: " << users.size() << std::endl;
+    if(users.empty()) {
+        std::cout << "No users found." << std::endl; 
+        return;
+        }
 
     std::cout << "List of users: " << std::endl;
-    for(auto &user : users){
-        std::cout << "- username: " << user.username << ", name" << user.firstname
-                  << " " << user.lastname << std::endl;
+    for(const auto &user : users){
+        std::cout << "- username: " << user.username << ", name: " << user.firstname
+                  << ", surname: " << user.lastname << std::endl;
     }
 }
     

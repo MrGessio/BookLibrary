@@ -19,6 +19,7 @@ public:
     void AllowBookBorrowing(); //access to borrow after making the availability
     void CheckBookAvailability(const std::string &title);
     void AddUser(const std::string &username, const std::string &password, const std::string &firstname, const std::string &lastname);
+    bool IsUsernameTaken(const std::string &username);
     void DisplayUsers();
     void DeleteUser(const std::string &username);
     void ListOfBorrowedBooks();
