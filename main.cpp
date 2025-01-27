@@ -65,6 +65,8 @@
                 std::cout << "Press...";
                 std::cin >> librarianChoice;
 
+
+                std::string username, password, firstname, lastname;
                 switch (librarianChoice){
                     case 1:
                         librarian.addBook();
@@ -73,13 +75,31 @@
                         librarian.deleteBook();
                         break;
                     case 3:
-                      // librarian.AddUser();
+                        
+                        std::cout << "Enter username: " << std::endl;
+                        std::cin >> username;
+        
+                        while (librarian.IsUsernameTaken(username)){
+                        std::cout << "Error. Username \"" << username << "\" is already taken." << std::endl;
+                        std::cout << "Enter username: " << std::endl;
+                        std::cin >> username;
+                        }                        
+
+                         std::cout << "Enter password: " << std::endl;
+                         std::cin >> password;
+                         std::cout << "Enter first name: " << std::endl;
+                         std::cin >> firstname;
+                         std::cout << "Enter last name: " << std::endl;
+                         std::cin >> lastname;
+                         librarian.AddUser(username, password, firstname, lastname);
                         break;
                     case 4:
-                      // librarian.DeleteUser();
+                        std::cout << "Enter username you want to delete: " << std::endl;
+                        std::cin >> username;
+                        librarian.DeleteUser(username);
                         break;
                     case 5:
-                        //?????? librarian.DisplayUsers();
+                         librarian.DisplayUsers();
                         break;
                     case 6:
                       //  librarian.ListOfBorrowedBooks();
