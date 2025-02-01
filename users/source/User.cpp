@@ -2,6 +2,14 @@
 
 extern std::fstream libraryDoc;
 
+void User::BorrowBook(const std::string &bookTitle, Logger &log){
+    std::ofstream file("borrowedBooks.txt", std::ios::app);
+    if (file.is_open()){
+        file << log.getUsername() << " " << bookTitle << "\n";
+        std::cout << "Book \"" << bookTitle << "\" borrowed." << std::endl;
+    } else std::cout << "Error. Could not open the borrowedBooks.txt" << std::endl;
+}
+
 void User::searchBook() {
     std::string titleToSearch;
     bool found = false;
@@ -29,11 +37,12 @@ void User::searchBook() {
 }
 
 void User::showBooks() {
+    std::cout << "List of books in the library: " << std::endl;
     libraryDoc.open("library.txt", std::ios::in);
     if (libraryDoc.is_open()) {
         std::string line;
         while (std::getline(libraryDoc, line)) {
-            std::cout << line << std::endl;
+            std::cout << "- " << line << std::endl;
         }
         libraryDoc.close();
     } else {
