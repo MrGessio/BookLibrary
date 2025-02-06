@@ -10,4 +10,5 @@ public:
     void searchBook();
     void showBooks();
     void BorrowBook(const std::string &bookTitle, Logger &log);
+    void ReturnBook(Logger &log);
 };

@@ -4,16 +4,16 @@
 
 std::fstream libraryDoc;
 
-Book::Book(std::string t, std::string a, int y) {
+Book::Book(std::string t, std::string a, int y, std::string s) {
         title = t;
         author = a;
         year = y;
-        //isAvailable = true;
+        status = s;
     }
 
         void Book::aboutBook() {
         std::cout << "Title: " << title << " Author: " << author << ", year: " << year
-                  << ", Available: " << isAvailable << std::endl;
+                  << ", Status: " << status << std::endl;
         libraryDoc.open("library.txt", std::ios::in); //read
         if (libraryDoc.is_open()) {
        // show exact one
@@ -32,7 +32,10 @@ Book::Book(std::string t, std::string a, int y) {
     int Book::getYear() {
         return year;
     }
-    //avaiable 
+
+    std::string Book::getStatus() {
+        return status;
+    } 
 
     void Book::setTitle(std::string t) {
         title = t;
@@ -45,7 +48,10 @@ Book::Book(std::string t, std::string a, int y) {
         year = y;
         } else std::cerr << "Invalid year" << std::endl;
     }
+    void Book::setStatus(std::string s) {
+        status = s;
+    }
     //Available
     std::string Book::dataToSave() {
-        return title + ", " + author + ", " + std::to_string(year);
+        return title + ", " + author + ", " + std::to_string(year) + status;
     }
