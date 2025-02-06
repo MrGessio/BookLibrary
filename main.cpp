@@ -136,16 +136,12 @@
                                     break;
 
                                 case 6:
-                                //  librarian.ListOfBorrowedBooks();
+                                    librarian.ListOfBorrowedBooks();
                                     break;
                             
                                 case 7:
-                                //  librarian.ListOfOverdueBooks();
-                                //data when u open the file
-                                //
-                                // librarian.AllowBookBorrowing();
-                                    break;
-
+                                    librarian.ListOfOverdueBooks();
+                                                  
                                 case 8:
                                     librarian.UpdateBook();
                                     break;
@@ -170,6 +166,7 @@
                             std::cout << "[2] To view borrowed books." << std::endl;
                             std::cout << "[3] To search a book." << std::endl;
                             std::cout << "[4] To show books." << std::endl;
+                            std::cout << "[5] To return a book." << std::endl;
                             std::cout << "[9] To exit." << std::endl;
                             std::cout << "Press...";
                             std::cin >> userChoice;
@@ -178,7 +175,7 @@
                             switch(userChoice){
                                 case 1:{
                                     std::string bookTitle;
-                                    std::cout << "Enter the title of a book you want to borrow" << std::endl;
+                                    std::cout << "Enter the title of the book you want to borrow" << std::endl;
                                     std::cin.ignore();
                                     std::getline(std::cin, bookTitle);
                                     user.BorrowBook(bookTitle, log);
@@ -191,15 +188,16 @@
                                     std::cout << "List of borrowed books by user " << log.getUsername() << ":" << std::endl;
                                     
                                     if (file.is_open()){
-                                        std::string line, username, title;
+                                        std::string line, username, title, borrowDate;
 
                                         while(std::getline(file, line)){
                                             std::istringstream iss(line);
-                                            iss >> username;
-                                            std::getline(iss, title);
+                                            std::getline(iss >> std::ws, username, ',');
+                                            std::getline(iss >> std::ws, title, ',');
+                                            iss >> borrowDate;
 
                                             if (username == log.getUsername()){
-                                                std::cout << "- " << title << "\n";
+                                                std::cout << "- " << title << " (borrowed on: " << borrowDate << ")" << std::endl;
                                             }
                                         }
                                     
@@ -222,6 +220,10 @@
                                     user.showBooks(); 
                                     std::cout << "\n";
                                     break;
+
+                                case 5:{
+                                    user.ReturnBook(log);
+                                    break;}
                         
                                 case 9:
                                     userScreen = false;

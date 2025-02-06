@@ -23,7 +23,7 @@ extern std::fstream libraryDoc;
     }
 
 void Admin::addBook() {
-    std::string title, author;
+    std::string title, author, status;
     bool Availability;
    
     std::cout << "Write the title: ";
@@ -32,15 +32,15 @@ void Admin::addBook() {
     std::cout << "Write the author: ";
     std::getline(std::cin, author);
     int year = GetValidYear();
-    Availability = true;
+    status = ", available";
 
- Book newBook(title, author, year);
+ Book newBook(title, author, year, status);
 
     libraryDoc.open("library.txt", std::ios::app);
     if (libraryDoc.is_open()) {
         libraryDoc << newBook.dataToSave() << std::endl;
         libraryDoc.close();
-        std::cout << "Book added: " << title << ", " << author << ", " << year << std::endl;
+        std::cout << "Book added: " << title << ", " << author << ", " << year << status << std::endl;
     } else {
         std::cout << "Error, couldn't open the file." << std::endl;
     }
