@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.22)
 
+if (COVERAGE)
+    message("Building with code coverage enabled")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+endif()
+
 project(BookLibrary)
 add_executable(out
   main.cpp
