@@ -12,4 +12,6 @@ add_executable(out
   users/source/UsersData.cpp
   )
 target_include_directories(out PUBLIC ${PROJECT_SOURCE_DIR}/users/include ${PROJECT_SOURCE_DIR}/include)
-set_property(TARGET out PROPERTY COMPILE_WARNING_AS_ERROR ON)
+add_subdirectory(
+  tests
+)
