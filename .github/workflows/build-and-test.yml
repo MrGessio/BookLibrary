@@ -31,3 +31,9 @@ jobs:
         run: |
          cd ${{ github.workspace }}
          cmake --build ${{ env.BUILD_DIR }}
+
+      - name: unit-tests-execution
+        run: |
+          cd ${{ github.workspace }}
+          cd ${{ env.BUILD_DIR }}/tests
+          ./testUser
