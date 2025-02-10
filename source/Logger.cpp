@@ -32,11 +32,11 @@ bool Logger::IsValidUser(const std::string& filename){
         std::stringstream stst(line);
         std::string fileUsername, filePassword; //variables read from the file
 
-        if(std::getline(stst, fileUsername, ' ') && std::getline(stst, filePassword, ' ')){
-            if (username == fileUsername, ' ' && password == filePassword){
-                loggedInUser = username;
-                return true; // user found
-            }
+        std::getline(stst, fileUsername, ' ');
+        std::getline(stst, filePassword, ' ');
+        if (username == fileUsername && password == filePassword){
+            loggedInUser = username;
+            return true; // user found
         }
     }
     file.close();

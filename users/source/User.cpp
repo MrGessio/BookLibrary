@@ -1,8 +1,7 @@
-#include "../include/User.h"
+#include "User.h"
 #include <ctime>
 #include <sstream>
 
-extern std::fstream libraryDoc;
 
 void User::BorrowBook(const std::string &bookTitle, Logger &log){
 
@@ -16,7 +15,7 @@ void User::BorrowBook(const std::string &bookTitle, Logger &log){
 
     while (std::getline(libraryFile, line)){
         std::istringstream lineStream(line);
-        
+
         std::getline(lineStream, title, ',');
         std::getline(lineStream, author, ',');
         std::getline(lineStream, year, ',');
@@ -33,7 +32,7 @@ void User::BorrowBook(const std::string &bookTitle, Logger &log){
         }
 
     tempFile << title << ", " << author << ", " << year << ", " << status << std::endl;
-   
+
     }
 
     libraryFile.close();
@@ -57,7 +56,7 @@ void User::BorrowBook(const std::string &bookTitle, Logger &log){
             std::tm nowTm = *std::localtime(&now);
             char dateBuffer[11];
             std::strftime(dateBuffer, sizeof(dateBuffer), "%Y-%m-%d", &nowTm);
-        
+
             file << log.getUsername() << ", " << bookTitle << "," << dateBuffer << "\n";
             std::cout << "Book \"" << bookTitle << "\" borrowed." << std::endl;
         } else std::cout << "Error. Could not open the borrowedBooks.txt" << std::endl;
@@ -147,8 +146,8 @@ void User::ReturnBook(Logger &log) {
         if(title == returnTitle && username == log.getUsername()){
             bookToReturnFound = true;
             status = "available";
-        } else  tempBorrowedFile << line << std::endl;           
-    }    
+        } else  tempBorrowedFile << line << std::endl;
+    }
         if(!bookToReturnFound){
             std::cout << "This book is not in your borrowed books list." << std::endl;
         }
@@ -177,7 +176,7 @@ void User::ReturnBook(Logger &log) {
     if(bookToReturnFound){
         std::cout << "The book " << returnTitle << " has been returned successfully." << std::endl;
         std::remove("borrowedBooks.txt");
-        std::rename("borrowedBooksTemp.txt", "borrowedBooks.txt");  
+        std::rename("borrowedBooksTemp.txt", "borrowedBooks.txt");
         if(bookUpdated){
             std::remove("library.txt");
             std::rename("libraryTemp.txt", "library.txt");

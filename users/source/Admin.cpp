@@ -1,9 +1,6 @@
 #include "../users/include/Admin.h"
 #include <limits>
 
-extern std::fstream libraryDoc;
-
-
  int Admin::GetValidYear(){
 
         int year;
@@ -25,7 +22,7 @@ extern std::fstream libraryDoc;
 void Admin::addBook() {
     std::string title, author, status;
     bool Availability;
-   
+
     std::cout << "Write the title: ";
     std::cin.ignore();
     std::getline(std::cin, title);
