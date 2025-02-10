@@ -1,0 +1,65 @@
+name: generate-code-coverage
+run-name: Code Coverage
+
+on:
+  push:
+    braches: [ 'main' ]
+  workflow_dispatch:
+
+env:
+  BUILD_DIR: ${{ github.workspace }}/_build
+  TEST_DIR: ${{ github.workspace }}/_build/tests
+
+jobs:
+  code-coverage-generation:
+    runs-on: [ 'ubuntu-24.04' ]
+    steps:
+       - uses: actions/checkout@v4.2.2
+       - name: python3-setting-up
+         run: |
+           sudo apt update
+           sudo apt install build-essential software-properties-common -y && sudo add-apt-repository ppa:deadsnakes/ppa
+           sudo apt update && sudo apt upgrade
+           sudo apt install python3.13 python3.13-venv -y
+       - name: python3-venv
+         run: |
+          python3.13 -m venv venv
+          source venv/bin/activate
+       - name: cmake-update
+         run: |
+           sudo snap install cmake --channel=3.31.1 --classic
+       - name: build
+         run: |
+           cd ${{ github.workspace }}
+           cmake -B ${{ env.BUILD_DIR }} -S ${{ github.workspace }} -DCOVERAGE=ON
+           cmake --build ${{ env.BUILD_DIR }}
+       - name: run-tests
+         run: |
+           cd ${{ env.TEST_DIR }}
+           ./testUser
+       - name: code-coverage-report-generation
+         run: |
+           sudo apt install lcov
+           lcov -c -d . -o code-coverage.info --include *.cpp --include *.h --ignore-errors mismatch
+           genhtml code-coverage.info --output-directory code_coverage
+       - name: code-coverage-raport-preaparing-to-publish
+         uses: actions/upload-pages-artifact@v3.0.1
+         with:
+           path: "${{ env.BUILD_DIR }}/code_coverage"
+
+  deploy-code-coverage-raport:
+    needs: [ 'code-coverage-generation' ]
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: code-coverage-report
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: [ 'ubuntu-24.04' ]
+    if: contains(github.ref, 'main')
+    steps:
+    - name: code-coverage-raport-publishing
+      id: deployment
+      uses: actions/deploy-pages@v4.0.5
