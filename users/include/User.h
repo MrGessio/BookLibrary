@@ -11,4 +11,7 @@ public:
     void showBooks();
     void BorrowBook(const std::string &bookTitle, Logger &log);
     void ReturnBook(Logger &log);
+
+protected:
+    std::fstream libraryDoc;
 };
