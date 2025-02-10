@@ -3,7 +3,7 @@ run-name: Code Coverage
 
 on:
   push:
-    braches: [ 'main' ]
+    branches: [ 'main' ]
   workflow_dispatch:
 
 env:
@@ -27,7 +27,7 @@ jobs:
           source venv/bin/activate
        - name: cmake-update
          run: |
-           sudo snap install cmake --channel=3.31.1 --classic
+           sudo snap install cmake --channel=3.31 --classic
        - name: build
          run: |
            cd ${{ github.workspace }}
