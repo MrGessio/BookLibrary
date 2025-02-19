@@ -35,9 +35,9 @@ jobs:
            cmake --build ${{ env.BUILD_DIR }}
        - name: code-coverage-report-generation
          run: |
-           cd ${{ github.workspace }}
+           cd ${BUILD_DIR}
            sudo apt install lcov
-           python3 ./.github/scripts/generate-code-coverage.py
+           python3 ../.github/scripts/generate-code-coverage.py
        - name: code-coverage-raport-preaparing-to-publish
          uses: actions/upload-pages-artifact@v3.0.1
          with:
