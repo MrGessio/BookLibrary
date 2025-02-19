@@ -33,15 +33,9 @@ jobs:
            cd ${{ github.workspace }}
            cmake -B ${{ env.BUILD_DIR }} -S ${{ github.workspace }} -DCOVERAGE=ON
            cmake --build ${{ env.BUILD_DIR }}
-       - name: run-tests
-         run: |
-           cd ${{ env.TEST_DIR }}
-           ./testUser
        - name: code-coverage-report-generation
          run: |
-           sudo apt install lcov
-           lcov -c -d . --remove libreoffice_total.info 'tests/* -o code-coverage.info --include *.cpp --include *.h --ignore-errors mismatch
-           genhtml code-coverage.info --output-directory code_coverage
+           python3 ./.github/scripts/generate-code-coverage.py
        - name: code-coverage-raport-preaparing-to-publish
          uses: actions/upload-pages-artifact@v3.0.1
          with:
