@@ -35,7 +35,7 @@ jobs:
            cmake --build ${{ env.BUILD_DIR }}
        - name: code-coverage-report-generation
          run: |
-           cd ${BUILD_DIR}
+           cd ${{ github.workspace }}
            sudo apt install lcov
            python3 ./.github/scripts/generate-code-coverage.py
        - name: code-coverage-raport-preaparing-to-publish
