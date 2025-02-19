@@ -41,3 +41,8 @@ target_link_libraries(testUser
         GTest::gtest
         GTest::gtest_main
         Userlib)
+
+enable_testing()
+add_test(
+    NAME testUser
+    COMMAND $<TARGET_FILE:testUser>)
