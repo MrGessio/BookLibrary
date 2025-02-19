@@ -26,4 +26,3 @@ TEST_F(UserTest, debug1) {
     ASSERT_TRUE(true);
     ASSERT_FALSE(false);
 }
-
