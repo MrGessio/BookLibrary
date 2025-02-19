@@ -40,7 +40,7 @@ jobs:
        - name: code-coverage-report-generation
          run: |
            sudo apt install lcov
-           lcov -c -d . -o code-coverage.info --include *.cpp --include *.h --ignore-errors mismatch
+           lcov -c -d . --remove libreoffice_total.info 'tests/* -o code-coverage.info --include *.cpp --include *.h --ignore-errors mismatch
            genhtml code-coverage.info --output-directory code_coverage
        - name: code-coverage-raport-preaparing-to-publish
          uses: actions/upload-pages-artifact@v3.0.1
