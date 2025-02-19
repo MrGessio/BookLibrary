@@ -3,7 +3,7 @@
 import os
 import subprocess
 
-home_dir = os.getcwd()
+home_dir = os.getcwd() + "/_build"
 
 os.chdir('tests')
 subprocess.run(['ctest', '-C', 'Debug', '--verbose'])
