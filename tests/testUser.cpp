@@ -22,6 +22,10 @@ class UserTest : public ::testing::Test{
     }
 };
 
+TEST_F(UserTest, debug) {
+    ASSERT_TRUE(true);
+}
+
 // TEST_F(UserTest, ReturnBorrowedBook){
 //     Logger testLogger("testUser");
 //     User user;
