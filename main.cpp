@@ -7,6 +7,7 @@
 #include "include/Book.h"
 #include "include/Logger.h"
 #include "User.h"
+#include "Reader.h"
 #include "Admin.h"
 #include "Librarian.h"
 
@@ -20,6 +21,7 @@
         Admin admin;
         Librarian librarian;
         User user;
+        Reader reader;
 
         int chosenNumber;
         char adminChoice;
@@ -38,12 +40,12 @@
 
             switch (chosenNumber) {
             case 1:
-                user.showBooks(); 
+                reader.showBooks(); 
                 std::cout << "\n";
                 break;
 
             case 2:
-                user.searchBook();
+                reader.searchBook();
                 std::cout << "\n";
                 break;
 
@@ -71,7 +73,7 @@
                                 break;
 
                             case 'b':
-                                user.showBooks(); 
+                                reader.showBooks(); 
                                 std::cout << "\n";
                                 break;
 
@@ -98,18 +100,18 @@
                             std::string username, password, firstname, lastname;
                             switch (librarianChoice){
                                 case 1:
-                                    librarian.addBook();
+                                    admin.addBook();
                                     break;
 
                                 case 2:
-                                    librarian.deleteBook();
+                                    admin.deleteBook();
                                     break;
 
                                 case 3:                        
                                     std::cout << "Enter username: " << std::endl;
                                     std::cin >> username;
             
-                                    while (librarian.IsUsernameTaken(username)){
+                                    while (user.IsUsernameTaken(username)){
                                         std::cout << "Error. Username \"" << username << "\" is already taken." << std::endl;
                                         std::cout << "Enter username: " << std::endl;
                                         std::cin >> username;
@@ -121,17 +123,17 @@
                                     std::cin >> firstname;
                                     std::cout << "Enter last name: " << std::endl;
                                     std::cin >> lastname;
-                                    librarian.AddUser(username, password, firstname, lastname);
+                                    user.AddUser(username, password, firstname, lastname);
                                     break;
 
                                 case 4:
                                     std::cout << "Enter username you want to delete: " << std::endl;
                                     std::cin >> username;
-                                    librarian.DeleteUser(username);
+                                    user.DeleteUser(username);
                                     break;
 
                                 case 5:
-                                    librarian.DisplayUsers();
+                                    user.DisplayUsers();
                                     std::cout << "\n";
                                     break;
 
@@ -143,7 +145,7 @@
                                     librarian.ListOfOverdueBooks();
                                                   
                                 case 8:
-                                    librarian.UpdateBook();
+                                    admin.UpdateBook();
                                     break;
                             
                                 case 9:
@@ -178,7 +180,7 @@
                                     std::cout << "Enter the title of the book you want to borrow" << std::endl;
                                     std::cin.ignore();
                                     std::getline(std::cin, bookTitle);
-                                    user.BorrowBook(bookTitle, log);
+                                    reader.BorrowBook(bookTitle, log);
                                     std::cout << "\n";
                                     break;}
 
@@ -212,17 +214,17 @@
                                 } 
 
                                 case 3:
-                                    user.searchBook();
+                                    reader.searchBook();
                                     std::cout << "\n";
                                     break;
 
                                 case 4:
-                                    user.showBooks(); 
+                                    reader.showBooks(); 
                                     std::cout << "\n";
                                     break;
 
                                 case 5:{
-                                    user.ReturnBook(log);
+                                    reader.ReturnBook(log);
                                     break;}
                         
                                 case 9:
