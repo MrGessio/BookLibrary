@@ -28,13 +28,16 @@ FetchContent_Declare(googletest
     target_include_directories(
         Userlib
             PRIVATE
-                "${PROJECT_SOURCE_DIR}/users/include")
+                "${PROJECT_SOURCE_DIR}/users/include"
+                "${PROJECT_SOURCE_DIR}/include"
+                )
 
 add_executable(testUser testUser.cpp)
 target_include_directories(
     testUser
             PRIVATE
-                "${PROJECT_SOURCE_DIR}/users/include")
+                "${PROJECT_SOURCE_DIR}/users/include"
+                "${PROJECT_SOURCE_DIR}/include")
 
 target_link_libraries(testUser
         PRIVATE
