@@ -8,8 +8,8 @@
 
 class Reader : public IBookManager {
 public:
-    void searchBook() override;
-    void showBooks() override;
+    void SearchBook() override;
+    void ShowBooks() override;
     void BorrowBook(const std::string &bookTitle, Logger &log) override;
     void ReturnBook(Logger &log) override;
 

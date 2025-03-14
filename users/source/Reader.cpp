@@ -74,7 +74,7 @@ std::string trim(const std::string &str){
     return str.substr(start, end - start + 1);
 }
 
-void Reader::searchBook() {
+void Reader::SearchBook() {
     std::string titleToSearch;
     bool found = false;
     std::cout << "Enter the title you are looking for: ";
@@ -100,7 +100,7 @@ void Reader::searchBook() {
     }
 }
 
-void Reader::showBooks() {
+void Reader::ShowBooks() {
     std::cout << "List of books in the library: " << std::endl;
     libraryDoc.open("library.txt", std::ios::in);
     if (libraryDoc.is_open()) {

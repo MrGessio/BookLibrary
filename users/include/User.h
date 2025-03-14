@@ -19,5 +19,5 @@ class User{
         void SaveUsers(); //save from vector to txt
     
     private:
-        std::vector<UserInfo> users; //list of the users
+        std::vector<UserInfo> m_users; //list of the users
 };

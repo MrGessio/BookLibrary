@@ -22,7 +22,7 @@ extern std::fstream libraryDoc;
 
     }
 
-void Admin::addBook() {
+void Admin::AddBook() {
     std::string title, author, status;
     bool Availability;
 
@@ -38,14 +38,14 @@ void Admin::addBook() {
 
     libraryDoc.open("library.txt", std::ios::app);
     if (libraryDoc.is_open()) {
-        libraryDoc << newBook.dataToSave() << std::endl;
+        libraryDoc << newBook.DataToSave() << std::endl;
         libraryDoc.close();
         std::cout << "Book added: " << title << ", " << author << ", " << year << status << std::endl;
     } else {
         std::cout << "Error, couldn't open the file." << std::endl;
     }
 }
-void Admin::deleteBook() {
+void Admin::DeleteBook() {
     std::string bookToDelete;
     std::cout << "Enter the title of the book you want to delete: ";
     std::cin >> bookToDelete;
@@ -106,7 +106,7 @@ void Admin:: UpdateBook() {
            lineStream >> year;
            
            if (title == bookToBeChanged){
-               //addBook()
+               //AddBook()
                foundToChange = true;
                std::cout << "You want to change this book: " << line << std::endl;
                continue;
@@ -116,13 +116,10 @@ void Admin:: UpdateBook() {
        libraryDoc.close();
        tempFile.close();
 
-       if(foundToChange){
-           if (std::remove("library.txt") == 0){
-               if(std::rename("libraryTemp.txt", "library.txt") == 0){
-                  addBook();
-               }
-           }
+       if(foundToChange && std::remove("library.txt") == 0 && std::rename("libraryTemp.txt", "library.txt") == 0){
+            AddBook();           
        }
+       
     if(!foundToChange) std::cout << "Book not found." << std::endl;
 }
 

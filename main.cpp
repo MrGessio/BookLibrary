@@ -40,17 +40,17 @@
 
             switch (chosenNumber) {
             case 1:
-                reader.showBooks(); 
+                reader.ShowBooks(); 
                 std::cout << "\n";
                 break;
 
             case 2:
-                reader.searchBook();
+                reader.SearchBook();
                 std::cout << "\n";
                 break;
 
             case 3:
-                log.logIn(); 
+                log.LogIn(); 
                 
                 if (log.IsValidUser("users.txt")){
                     std::cout << "\nHello, " << log.getUsername() << "!" << std::endl;
@@ -65,15 +65,15 @@
 
                             switch (adminChoice) {
                             case 'a':
-                                admin.addBook();
+                                admin.AddBook();
                                 break;
 
                             case 'd':
-                                admin.deleteBook();
+                                admin.DeleteBook();
                                 break;
 
                             case 'b':
-                                reader.showBooks(); 
+                                reader.ShowBooks(); 
                                 std::cout << "\n";
                                 break;
 
@@ -100,11 +100,11 @@
                             std::string username, password, firstname, lastname;
                             switch (librarianChoice){
                                 case 1:
-                                    admin.addBook();
+                                    admin.AddBook();
                                     break;
 
                                 case 2:
-                                    admin.deleteBook();
+                                    admin.DeleteBook();
                                     break;
 
                                 case 3:                        
@@ -214,12 +214,12 @@
                                 } 
 
                                 case 3:
-                                    reader.searchBook();
+                                    reader.SearchBook();
                                     std::cout << "\n";
                                     break;
 
                                 case 4:
-                                    reader.showBooks(); 
+                                    reader.ShowBooks(); 
                                     std::cout << "\n";
                                     break;
 

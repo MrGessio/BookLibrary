@@ -6,8 +6,8 @@
 
 class Admin: public Librarian{
 public:
-    void addBook();
-    void deleteBook();
+    void AddBook();
+    void DeleteBook();
     void UpdateBook();
     int GetValidYear();
 };

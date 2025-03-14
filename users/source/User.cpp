@@ -11,7 +11,7 @@
 extern std::fstream usersDoc;
 
 void User:: LoadUsers(){
-   users.clear(); //clears vector before loading data
+   m_users.clear(); //clears vector before loading data
    std::fstream usersDoc("users.txt", std::ios::in); 
 
     if(!usersDoc){
@@ -21,7 +21,7 @@ void User:: LoadUsers(){
 
     UserInfo user;
     while (usersDoc >> user.username >> user.password >> user.firstname >> user.lastname){
-        users.push_back(user);
+        m_users.push_back(user);
     }
 
     usersDoc.close();
@@ -35,7 +35,7 @@ void User:: SaveUsers(){
         return;
     }
 
-    for(auto &user : users){
+    for(const auto& user : m_users){
         usersDoc << user.username << " " << user.password << " " << user.firstname << " " << user.lastname << std::endl;
     }
     usersDoc.close();
@@ -45,10 +45,10 @@ void User:: SaveUsers(){
 
 bool User:: IsUsernameTaken(const std::string &username){
     LoadUsers();
-    auto it = std::find_if(users.begin(), users.end(), [&username](const UserInfo &user) {
+    auto it = std::find_if(m_users.begin(), m_users.end(), [&username](const UserInfo &user) {
         return user.username == username;
     });
-    return it != users.end(); 
+    return it != m_users.end(); 
 }
 
 void User:: AddUser(const std::string &username, const std::string &password, const std::string &firstname, const std::string &lastname){
@@ -60,7 +60,7 @@ void User:: AddUser(const std::string &username, const std::string &password, co
 
     //add user to the list
     UserInfo newUser = {username, password, firstname, lastname};
-    users.push_back(newUser);
+    m_users.push_back(newUser);
 
     SaveUsers(); //save the edited list
 
@@ -71,12 +71,12 @@ void User:: AddUser(const std::string &username, const std::string &password, co
 void User::DeleteUser(const std::string &username){
 
     LoadUsers();
-    auto it = std::find_if(users.begin(), users.end(), [&username](const UserInfo &user0){
+    auto it = std::find_if(m_users.begin(), m_users.end(), [&username](const UserInfo &user0){
         return user0.username == username;
     });
 
-    if (it != users.end()){
-        users.erase(it); //delete user from the list
+    if (it != m_users.end()){
+        m_users.erase(it); //delete user from the list
         SaveUsers();
 
         std::cout << "User: " << username << " deleted correctly." << std::endl;
@@ -86,14 +86,14 @@ void User::DeleteUser(const std::string &username){
 
 void User::DisplayUsers(){
     LoadUsers();
-    std::cout << "Number of users: " << users.size() << std::endl;
-    if(users.empty()) {
+    std::cout << "Number of users: " << m_users.size() << std::endl;
+    if(m_users.empty()) {
         std::cout << "No users found." << std::endl; 
         return;
         }
 
     std::cout << "List of users: " << std::endl;
-    for(const auto &user : users){
+    for(const auto& user : m_users){
         std::cout << "- username: " << user.username << ", name: " << user.firstname
                   << ", surname: " << user.lastname << std::endl;
     }
