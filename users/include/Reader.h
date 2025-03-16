@@ -3,8 +3,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include "../../include/Logger.h"
-#include "../../include/IBookManager.h"
+#include "Logger.h"
+#include "IBookManager.h"
 
 class Reader : public IBookManager {
 public:

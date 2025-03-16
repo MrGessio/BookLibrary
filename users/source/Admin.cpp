@@ -1,4 +1,4 @@
-#include "../users/include/Admin.h"
+#include "Admin.h"
 #include <limits>
 #include <sstream>
 
@@ -102,24 +102,24 @@ void Admin:: UpdateBook() {
        while (std::getline(libraryDoc, line)){
            std::istringstream lineStream(line);
            std::getline(lineStream, title, ',');
-           std::getline(lineStream, author, ','); 
+           std::getline(lineStream, author, ',');
            lineStream >> year;
-           
+
            if (title == bookToBeChanged){
                //AddBook()
                foundToChange = true;
                std::cout << "You want to change this book: " << line << std::endl;
                continue;
            }
-           tempFile << line << std::endl; 
+           tempFile << line << std::endl;
        }
        libraryDoc.close();
        tempFile.close();
 
        if(foundToChange && std::remove("library.txt") == 0 && std::rename("libraryTemp.txt", "library.txt") == 0){
-            AddBook();           
+            AddBook();
        }
-       
+
     if(!foundToChange) std::cout << "Book not found." << std::endl;
 }
 
