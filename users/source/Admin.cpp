@@ -1,5 +1,8 @@
-#include "../users/include/Admin.h"
+#include "Admin.h"
 #include <limits>
+#include <sstream>
+
+extern std::fstream libraryDoc;
 
  int Admin::GetValidYear(){
 
@@ -19,7 +22,7 @@
 
     }
 
-void Admin::addBook() {
+void Admin::AddBook() {
     std::string title, author, status;
     bool Availability;
 
@@ -35,14 +38,14 @@ void Admin::addBook() {
 
     libraryDoc.open("library.txt", std::ios::app);
     if (libraryDoc.is_open()) {
-        libraryDoc << newBook.dataToSave() << std::endl;
+        libraryDoc << newBook.DataToSave() << std::endl;
         libraryDoc.close();
         std::cout << "Book added: " << title << ", " << author << ", " << year << status << std::endl;
     } else {
         std::cout << "Error, couldn't open the file." << std::endl;
     }
 }
-void Admin::deleteBook() {
+void Admin::DeleteBook() {
     std::string bookToDelete;
     std::cout << "Enter the title of the book you want to delete: ";
     std::cin >> bookToDelete;
@@ -80,3 +83,43 @@ void Admin::deleteBook() {
         std::cout << "Book not found." << std::endl;
     }
 }
+
+void Admin:: UpdateBook() {
+    std::string bookToBeChanged;
+    std::cout << "Enter the title of a book to be changed: " << std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, bookToBeChanged);
+
+    libraryDoc.open("library.txt", std::ios::in);
+    std::fstream tempFile("libraryTemp.txt", std::ios::out);
+
+    if(!libraryDoc.is_open() || !tempFile.is_open()){
+       std::cout << "Error opening files." << std::endl;
+       return;
+    }
+       std::string line, title, author, year;
+       bool foundToChange = false;
+       while (std::getline(libraryDoc, line)){
+           std::istringstream lineStream(line);
+           std::getline(lineStream, title, ',');
+           std::getline(lineStream, author, ',');
+           lineStream >> year;
+
+           if (title == bookToBeChanged){
+               //AddBook()
+               foundToChange = true;
+               std::cout << "You want to change this book: " << line << std::endl;
+               continue;
+           }
+           tempFile << line << std::endl;
+       }
+       libraryDoc.close();
+       tempFile.close();
+
+       if(foundToChange && std::remove("library.txt") == 0 && std::rename("libraryTemp.txt", "library.txt") == 0){
+            AddBook();
+       }
+
+    if(!foundToChange) std::cout << "Book not found." << std::endl;
+}
+

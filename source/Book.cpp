@@ -11,7 +11,7 @@ Book::Book(std::string t, std::string a, int y, std::string s) {
         status = s;
     }
 
-        void Book::aboutBook() {
+        void Book::AboutBook() {
         std::cout << "Title: " << title << " Author: " << author << ", year: " << year
                   << ", Status: " << status << std::endl;
         libraryDoc.open("library.txt", std::ios::in); //read
@@ -52,6 +52,7 @@ Book::Book(std::string t, std::string a, int y, std::string s) {
         status = s;
     }
     //Available
-    std::string Book::dataToSave() {
+    std::string Book::DataToSave() {
         return title + ", " + author + ", " + std::to_string(year) + status;
     }
+    

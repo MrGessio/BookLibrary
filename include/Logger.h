@@ -9,7 +9,7 @@ public:
     Logger() : username("default") {}
     Logger(const std::string &name) : username(name){}
     
-    void logIn();
+    void LogIn();
     std::string getUsername();
     std::string getPassword();
     bool IsValidUser(const std::string& userfile);

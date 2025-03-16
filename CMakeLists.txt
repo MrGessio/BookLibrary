@@ -15,8 +15,13 @@ add_executable(out
   users/source/Reader.cpp
   users/source/Librarian.cpp
   users/source/UsersData.cpp
-  )
-target_include_directories(out PUBLIC ${PROJECT_SOURCE_DIR}/users/include ${PROJECT_SOURCE_DIR}/include)
-add_subdirectory(
-  tests
 )
+target_include_directories(out PUBLIC ${PROJECT_SOURCE_DIR}/users/include ${PROJECT_SOURCE_DIR}/include)
+add_subdirectory(tests)
+
+# Copy script to generating code coverage raport into build directory
+file(
+    COPY
+        ${PROJECT_SOURCE_DIR}/.github/scripts/generate-code-coverage.py
+    DESTINATION
+        ${PROJECT_BINARY_DIR})

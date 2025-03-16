@@ -3,7 +3,7 @@
 #include <sstream>
 #include <fstream>
 
-void Logger::logIn(){
+void Logger::LogIn(){
     std::cout << "Write your username: ";
     std::cin >> username;
     std::cout << "Write your password: ";
