@@ -1,12 +1,13 @@
 #include "Reader.h"
 #include <ctime>
 #include <sstream>
+#include <stdexcept>
 
 
-void Reader::BorrowBook(const std::string &bookTitle, Logger &log){
+void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::string &libraryPath , const std::string &borrowedBooks ){
 
     std::string trim(const std::string &str);
-    std::ifstream libraryFile("library.txt");
+    std::ifstream libraryFile(libraryPath);
     std::ofstream tempFile("libraryTemp.txt");
 
     std::string line, title, author, year, status;
@@ -26,12 +27,12 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log){
 
         if(title == bookTitle){
             bookFound = true;
-            if(status == "not available"){
+            if(status == " not available"){
                 alreadyBorrowed = true;
-            } else status = "not available";
+            } else status = " not available";
         }
 
-    tempFile << title << ", " << author << ", " << year << ", " << status << std::endl;
+    tempFile << title << "," << author << "," << year << "," << status << std::endl;
 
     }
 
@@ -43,21 +44,22 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log){
         return;
     }
     if(alreadyBorrowed){
+        throw std::runtime_error("Error: Book \"" + bookTitle + "\" is already borrowed and not available.");
         std::cout << "You can not borrow " << bookTitle << " because it is not available." << std::endl;
     }
 
-    std::remove("library.txt");
-    std::rename("libraryTemp.txt", "library.txt");
+    std::remove(libraryPath.c_str());
+    std::rename("libraryTemp.txt", libraryPath.c_str());
 
     if(bookFound && !alreadyBorrowed){
-        std::ofstream file("borrowedBooks.txt", std::ios::app);
+        std::ofstream file(borrowedBooks, std::ios::app);
         if (file.is_open()){
             std::time_t now = std::time(nullptr);
             std::tm nowTm = *std::localtime(&now);
             char dateBuffer[11];
             std::strftime(dateBuffer, sizeof(dateBuffer), "%Y-%m-%d", &nowTm);
 
-            file << log.getUsername() << ", " << bookTitle << "," << dateBuffer << "\n";
+            file << log.getUsername() << ", " << bookTitle << ", " << dateBuffer << "\n";
             std::cout << "Book \"" << bookTitle << "\" borrowed." << std::endl;
         } else std::cout << "Error. Could not open the borrowedBooks.txt" << std::endl;
     }
@@ -168,7 +170,7 @@ void Reader::ReturnBook(Logger &log) {
             status = "available";
         }
 
-        tempLibraryFile << title << ", " << author << ", " << year << "," << status << std::endl;
+        tempLibraryFile << title << ", " << author << ", " << year << ", " << status << std::endl;
     }
     libraryFile.close();
     tempLibraryFile.close();

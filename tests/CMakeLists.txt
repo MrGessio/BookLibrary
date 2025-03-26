@@ -22,21 +22,42 @@ FetchContent_Declare(googletest
 
     add_library(Userlib
         ${PROJECT_SOURCE_DIR}/users/include/User.h
+        ${PROJECT_SOURCE_DIR}/users/include/Reader.h
         ${PROJECT_SOURCE_DIR}/users/source/User.cpp
+        ${PROJECT_SOURCE_DIR}/users/source/Reader.cpp
         ${PROJECT_SOURCE_DIR}/include/Logger.h
         ${PROJECT_SOURCE_DIR}/source/Logger.cpp)
     target_include_directories(
         Userlib
             PRIVATE
-                "${PROJECT_SOURCE_DIR}/users/include")
+                "${PROJECT_SOURCE_DIR}/users/include"
+                "${PROJECT_SOURCE_DIR}/include")
 
-add_executable(testUser testUser.cpp)
+add_executable(BorrowingTest BorrowingTestSuite.cpp)
 target_include_directories(
-    testUser
+    BorrowingTest
             PRIVATE
-                "${PROJECT_SOURCE_DIR}/users/include")
+            "${PROJECT_SOURCE_DIR}/users/include"
+            "${PROJECT_SOURCE_DIR}/include")
+            
 
-target_link_libraries(testUser
+target_link_libraries(BorrowingTest
+        PRIVATE
+        GTest::gtest
+        GTest::gtest_main
+        Userlib)
+
+
+        
+add_executable(BorrowTest BorrowTestSuite.cpp)
+target_include_directories(
+    BorrowTest
+            PRIVATE
+            "${PROJECT_SOURCE_DIR}/users/include"
+            "${PROJECT_SOURCE_DIR}/include")
+            
+
+target_link_libraries(BorrowTest
         PRIVATE
         GTest::gtest
         GTest::gtest_main
@@ -44,5 +65,16 @@ target_link_libraries(testUser
 
 enable_testing()
 add_test(
-    NAME testUser
-    COMMAND $<TARGET_FILE:testUser>)
+    NAME BorrowingTest
+    COMMAND $<TARGET_FILE:BorrowingTest>)
+
+
+add_test(
+    NAME BorrowTest
+    COMMAND $<TARGET_FILE:BorrowTest>)
+
+    file(
+    COPY
+        ${PROJECT_SOURCE_DIR}/tests/data
+    DESTINATION
+        ${PROJECT_BINARY_DIR}/tests)
