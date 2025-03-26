@@ -10,7 +10,7 @@ class Reader : public IBookManager {
 public:
     void SearchBook() override;
     void ShowBooks() override;
-    void BorrowBook(const std::string &bookTitle, Logger &log) override;
+    void BorrowBook(const std::string &bookTitle, Logger &log, const std::string &libraryPath = "library.txt", const std::string &borrowedBooks = "borrowedBooks.txt") override;
     void ReturnBook(Logger &log) override;
 
 protected:

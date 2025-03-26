@@ -55,4 +55,3 @@ Book::Book(std::string t, std::string a, int y, std::string s) {
     std::string Book::DataToSave() {
         return title + ", " + author + ", " + std::to_string(year) + status;
     }
-    
