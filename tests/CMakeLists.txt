@@ -33,15 +33,15 @@ FetchContent_Declare(googletest
                 "${PROJECT_SOURCE_DIR}/users/include"
                 "${PROJECT_SOURCE_DIR}/include")
 
-add_executable(BorrowingTest BorrowingTestSuite.cpp)
+add_executable(AdminTest AdminTestSuite.cpp)
 target_include_directories(
-    BorrowingTest
+    AdminTest
             PRIVATE
             "${PROJECT_SOURCE_DIR}/users/include"
             "${PROJECT_SOURCE_DIR}/include")
             
 
-target_link_libraries(BorrowingTest
+target_link_libraries(AdminTest
         PRIVATE
         GTest::gtest
         GTest::gtest_main
@@ -65,8 +65,8 @@ target_link_libraries(ReaderTest
 
 enable_testing()
 add_test(
-    NAME BorrowingTest
-    COMMAND $<TARGET_FILE:BorrowingTest>)
+    NAME AdminTest
+    COMMAND $<TARGET_FILE:AdminTest>)
 
 
 add_test(
