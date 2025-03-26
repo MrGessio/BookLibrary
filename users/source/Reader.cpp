@@ -25,9 +25,11 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::st
         title = trim(title);
         status = trim(status);
 
+        std::cout << "title: " << title << ", bookTitle: " << bookTitle << std::endl;
         if(title == bookTitle){
             bookFound = true;
-            if(status == " not available"){
+            std::cout << "current status: " << status << std::endl;
+            if(status == "not available"){
                 alreadyBorrowed = true;
             } else status = " not available";
         }
@@ -43,9 +45,10 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::st
         std::cout << "Error: Book \"" << bookTitle << "\" not found in the library." << std::endl;
         return;
     }
-    if(alreadyBorrowed){
+
+    std::cout << std::boolalpha << "is book already borrowed: " << alreadyBorrowed << std::endl;
+    if (alreadyBorrowed) {
         throw std::runtime_error("Error: Book \"" + bookTitle + "\" is already borrowed and not available.");
-        std::cout << "You can not borrow " << bookTitle << " because it is not available." << std::endl;
     }
 
     std::remove(libraryPath.c_str());
@@ -64,6 +67,7 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::st
         } else std::cout << "Error. Could not open the borrowedBooks.txt" << std::endl;
     }
 }
+
 std::string trim(const std::string &str){
     const char* whitespace = " \t\n\r\f\v";
     size_t start = str.find_first_not_of(whitespace);
