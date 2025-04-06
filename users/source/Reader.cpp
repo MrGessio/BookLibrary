@@ -31,7 +31,7 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::st
             std::cout << "current status: " << status << std::endl;
             if(status == "not available"){
                 alreadyBorrowed = true;
-            } else status = " not available";
+            } else status = "not available";
         }
 
     tempFile << title << "," << author << "," << year << "," << status << std::endl;
