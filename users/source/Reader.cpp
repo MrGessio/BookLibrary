@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 
-void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::string &libraryPath , const std::string &borrowedBooks ){
+void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::string &libraryPath , const std::string &borrowedBooks){
 
     std::string trim(const std::string &str);
     std::ifstream libraryFile(libraryPath);
@@ -31,7 +31,7 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::st
             std::cout << "current status: " << status << std::endl;
             if(status == "not available"){
                 alreadyBorrowed = true;
-            } else status = " not available";
+            } else status = "not available";
         }
 
     tempFile << title << "," << author << "," << year << "," << status << std::endl;
@@ -80,62 +80,62 @@ std::string trim(const std::string &str){
     return str.substr(start, end - start + 1);
 }
 
-void Reader::SearchBook() {
-    std::string titleToSearch;
-    bool found = false;
-    std::cout << "Enter the title you are looking for: ";
-    std::cin.ignore();
-    std::getline(std::cin, titleToSearch);
+void Reader::SearchBook(const std::string &titleToSearch, const std::string &libraryPath) {
 
-    libraryDoc.open("library.txt", std::ios::in);
-    if (libraryDoc.is_open()) {
+    bool found = false;
+    std::ifstream libraryFile(libraryPath);
+    if (libraryFile.is_open()) {
         std::string line;
-        while (std::getline(libraryDoc, line)) {
-            if (line.find(titleToSearch) != std::string::npos) {
+        while (std::getline(libraryFile, line)) {
+            std::istringstream lineStream(line);
+            std::string title;
+            std::getline(lineStream, title, ',');  // Pobranie samego tytułu
+            if (trim(title) == trim(titleToSearch)) {
                 std::cout << "Book found: " << line << std::endl;
                 found = true;
-            }
+                }
         }
-        libraryDoc.close();
+        libraryFile.close();
     } else {
         std::cout << "Error, couldn't open the file." << std::endl;
+        throw std::runtime_error("Error: couldn't open the file.");
     }
 
     if (!found) {
         std::cout << "Book not found." << std::endl;
+        throw std::runtime_error("Error: couldn't find the book");
     }
 }
 
-void Reader::ShowBooks() {
+void Reader::ShowBooks(const std::string &libraryPath) {
     std::cout << "List of books in the library: " << std::endl;
-    libraryDoc.open("library.txt", std::ios::in);
-    if (libraryDoc.is_open()) {
+    std::ifstream libraryFile(libraryPath);
+    if (libraryFile.is_open()) {
         std::string line;
-        while (std::getline(libraryDoc, line)) {
+        while (std::getline(libraryFile, line)) {
             std::cout << "- " << line << std::endl;
         }
-        libraryDoc.close();
+        libraryFile.close();
     } else {
         std::cout << "Error, couldn't open the file." << std::endl;
+        throw std::runtime_error("Error: couldn't open the file.");
     }
 }
-void Reader::ReturnBook(Logger &log) {
-    std::string returnTitle;
-    std::cout << "Enter the title of the book you want to return: " << std::endl;
-    std::cin.ignore();
-    std::getline(std::cin, returnTitle);
-    std::ifstream borrowedFile("borrowedBooks.txt");
-    std::ifstream libraryFile("library.txt");
-    std::ofstream tempBorrowedFile("borrowedBooksTemp.txt");
-    std::ofstream tempLibraryFile("libraryTemp.txt");
+void Reader::ReturnBook(const std::string &bookTitle, Logger &log, const std::string &libraryPath , const std::string &borrowedBooks, const std::string &libraryPathTemp , const std::string &borrowedBooksTemp){
+    std::ifstream borrowedFile(libraryPath);
+    std::ifstream libraryFile(libraryPath);
+    std::ofstream tempBorrowedFile(libraryPathTemp);
+    std::ofstream tempLibraryFile(libraryPathTemp);
 
-    if (!borrowedFile && !libraryFile) {
+    if (!borrowedFile || !libraryFile) {
         std::cout << "Error. Could not open borrowedBooks.txt or library.txt" << std::endl;
+        throw std::runtime_error("Could not open files");
         return;
     }
 
-    if(!tempBorrowedFile && !tempLibraryFile){
+    if(!tempBorrowedFile || !tempLibraryFile){
         std::cout << "Error. Could not open borrowedBooksTemp.txt or libraryTemp.txt" << std::endl;
+        throw std::runtime_error("Could not open temporary files");
         return;
     }
 
@@ -149,7 +149,7 @@ void Reader::ReturnBook(Logger &log) {
         std::getline(lineStream >> std::ws, status, ',');
         lineStream >> borrowDate;
 
-        if(title == returnTitle && username == log.getUsername()){
+        if(title == bookTitle && username == log.getUsername()){
             bookToReturnFound = true;
             status = "available";
         } else  tempBorrowedFile << line << std::endl;
@@ -169,7 +169,7 @@ void Reader::ReturnBook(Logger &log) {
         std::getline(lineStream >> std::ws, year, ',');
         std::getline(lineStream >> std::ws, status, ',');
 
-        if(title == returnTitle){
+        if(title == bookTitle){
             bookUpdated = true;
             status = "available";
         }
@@ -180,7 +180,7 @@ void Reader::ReturnBook(Logger &log) {
     tempLibraryFile.close();
 
     if(bookToReturnFound){
-        std::cout << "The book " << returnTitle << " has been returned successfully." << std::endl;
+        std::cout << "The book " << bookTitle << " has been returned successfully." << std::endl;
         std::remove("borrowedBooks.txt");
         std::rename("borrowedBooksTemp.txt", "borrowedBooks.txt");
         if(bookUpdated){

@@ -27,6 +27,8 @@
         char adminChoice;
         int librarianChoice;
         
+        std::string titleToSearch;
+        
         while(mainScreen){
             std::cout << "\n            Welcome to the Library" << std::endl;
             std::cout << "Press a number to choose from the option below:" << std::endl;
@@ -40,12 +42,23 @@
 
             switch (chosenNumber) {
             case 1:
-                reader.ShowBooks(); 
+                try {
+                    reader.ShowBooks(); 
+                } catch (const std::runtime_error& e){
+                    std::cerr << "Error: " << e.what() << std::endl;
+                }
                 std::cout << "\n";
                 break;
 
             case 2:
-                reader.SearchBook();
+                std::cout << "Enter the title you are looking for: ";
+                std::cin.ignore();
+                std::getline(std::cin, titleToSearch);
+                try {
+                    reader.SearchBook(titleToSearch);
+                } catch (const std::runtime_error& e) {
+                    std::cerr << "Error: " << e.what() << std::endl;
+                }
                 std::cout << "\n";
                 break;
 
@@ -73,7 +86,11 @@
                                 break;
 
                             case 'b':
-                                reader.ShowBooks(); 
+                                try {
+                                    reader.ShowBooks();
+                                } catch (const std::runtime_error& e) {
+                                    std::cerr << "Error: " << e.what() << std::endl;
+                                } 
                                 std::cout << "\n";
                                 break;
 
@@ -180,9 +197,14 @@
                                     std::cout << "Enter the title of the book you want to borrow" << std::endl;
                                     std::cin.ignore();
                                     std::getline(std::cin, bookTitle);
-                                    reader.BorrowBook(bookTitle, log);
+                                    try {
+                                        reader.BorrowBook(bookTitle, log);
+                                    } catch (const std::runtime_error& e) {
+                                        std::cerr << "Error: " << e.what() << std::endl;
+                                    }
                                     std::cout << "\n";
-                                    break;}
+                                    break;
+                                }
 
                                 case 2:
                                 {
@@ -214,17 +236,36 @@
                                 } 
 
                                 case 3:
-                                    reader.SearchBook();
+                                    std::cout << "Enter the title you are looking for: ";
+                                    std::cin.ignore();
+                                    std::getline(std::cin, titleToSearch);
+                                    try {
+                                        reader.SearchBook(titleToSearch);
+                                    } catch (const std::runtime_error& e) {
+                                        std::cerr << "Error: " << e.what() << std::endl;
+                                    }
                                     std::cout << "\n";
                                     break;
 
                                 case 4:
-                                    reader.ShowBooks(); 
+                                    try {
+                                        reader.ShowBooks(); 
+                                    } catch (const std::runtime_error& e) {
+                                        std::cerr << "Error: " << e.what() << std::endl;
+                                    }
                                     std::cout << "\n";
                                     break;
 
                                 case 5:{
-                                    reader.ReturnBook(log);
+                                    std::string returnTitle;
+                                    std::cout << "Enter the title of the book you want to return: " << std::endl;
+                                    std::cin.ignore();
+                                    std::getline(std::cin, returnTitle);
+                                    try {
+                                        reader.ReturnBook(returnTitle, log);
+                                    } catch (const std::runtime_error& e) {
+                                        std::cerr << "Error: " << e.what() << std::endl;
+                                    }
                                     break;}
                         
                                 case 9:
