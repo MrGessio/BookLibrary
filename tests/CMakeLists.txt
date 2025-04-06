@@ -49,15 +49,15 @@ target_link_libraries(BorrowingTest
 
 
         
-add_executable(BorrowTest BorrowTestSuite.cpp)
+add_executable(ReaderTest ReaderTestSuite.cpp)
 target_include_directories(
-    BorrowTest
+    ReaderTest
             PRIVATE
             "${PROJECT_SOURCE_DIR}/users/include"
             "${PROJECT_SOURCE_DIR}/include")
             
 
-target_link_libraries(BorrowTest
+target_link_libraries(ReaderTest
         PRIVATE
         GTest::gtest
         GTest::gtest_main
@@ -70,8 +70,8 @@ add_test(
 
 
 add_test(
-    NAME BorrowTest
-    COMMAND $<TARGET_FILE:BorrowTest>)
+    NAME ReaderTest
+    COMMAND $<TARGET_FILE:ReaderTest>)
 
     file(
     COPY
