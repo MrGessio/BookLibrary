@@ -25,7 +25,7 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::st
         title = trim(title);
         status = trim(status);
 
-        std::cout << "title: " << title << ", bookTitle: " << bookTitle << std::endl;
+       // std::cout << "title: " << title << ", bookTitle: " << bookTitle << std::endl;
         if(title == bookTitle){
             bookFound = true;
             std::cout << "current status: " << status << std::endl;
@@ -122,9 +122,9 @@ void Reader::ShowBooks(const std::string &libraryPath) {
     }
 }
 void Reader::ReturnBook(const std::string &bookTitle, Logger &log, const std::string &libraryPath , const std::string &borrowedBooks, const std::string &libraryPathTemp , const std::string &borrowedBooksTemp){
-    std::ifstream borrowedFile(libraryPath);
+    std::ifstream borrowedFile(borrowedBooks);
     std::ifstream libraryFile(libraryPath);
-    std::ofstream tempBorrowedFile(libraryPathTemp);
+    std::ofstream tempBorrowedFile(borrowedBooksTemp);
     std::ofstream tempLibraryFile(libraryPathTemp);
 
     if (!borrowedFile || !libraryFile) {
@@ -156,6 +156,7 @@ void Reader::ReturnBook(const std::string &bookTitle, Logger &log, const std::st
     }
         if(!bookToReturnFound){
             std::cout << "This book is not in your borrowed books list." << std::endl;
+            throw std::runtime_error("This book is not in your borrowed books list.");
         }
 
     borrowedFile.close();
@@ -181,11 +182,11 @@ void Reader::ReturnBook(const std::string &bookTitle, Logger &log, const std::st
 
     if(bookToReturnFound){
         std::cout << "The book " << bookTitle << " has been returned successfully." << std::endl;
-        std::remove("borrowedBooks.txt");
-        std::rename("borrowedBooksTemp.txt", "borrowedBooks.txt");
+        std::remove(borrowedBooks.c_str());
+        std::rename(borrowedBooksTemp.c_str(), borrowedBooks.c_str());
         if(bookUpdated){
-            std::remove("library.txt");
-            std::rename("libraryTemp.txt", "library.txt");
+            std::remove(libraryPath.c_str());
+            std::rename(libraryPathTemp.c_str(), libraryPath.c_str());
         }
     }
 }

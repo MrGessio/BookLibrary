@@ -10,9 +10,10 @@ namespace fs = std::filesystem;
 
 class ReaderTestSuite : public ::testing::Test {
     protected:
-    std::vector<std::string> files = {"data/AvailableBook.txt", "data/BorrowedBook.txt", "data/NotAvailableBook.txt", "data/NotAvailableBookTemp.txt", "data/UnBorrowedBook.txt", "data/BorrowedBookTemp.txt"};
+    std::vector<std::string> files = {"data/Library.txt", "data/LibraryTemp.txt", "data/Users.txt", "data/BorrowedBooks.txt", "data/BorrowedBooksTemp.txt"};
     std::vector<std::string> backupFiles;
             
+
     void SetUp() override {
         //creating backup files
         for (const auto& file : files) {
@@ -22,6 +23,18 @@ class ReaderTestSuite : public ::testing::Test {
                 fs::copy(file, backupFile, fs::copy_options::overwrite_existing);
 
             }
+        }
+
+        std::ofstream libraryFileTemp("data/LibraryTemp.txt", std::ios::trunc);
+        //filling up a txt with books
+        std::ofstream libraryFile("data/Library.txt", std::ios::trunc);
+        if (libraryFile.is_open()) {
+            libraryFile << "Przedwiosnie, Stefan Zeromski, 1924, available\n";
+            libraryFile << "Lalka, Boleslaw Prus, 1890, available\n";
+            libraryFile << "Ferdydurke, Witold Gombrowicz, 1937, available\n";
+            libraryFile << "Pan Tadeusz, Adam Mickiewicz, 1834, available\n";
+            libraryFile << "Kamienie na szaniec, Aleksander Kaminski, 1943, available\n";
+            libraryFile.close();
         }
     }
 
@@ -36,13 +49,76 @@ class ReaderTestSuite : public ::testing::Test {
     }
 };
 
+
+TEST_F(ReaderTestSuite, ShouldShowBooks) {
+    std::string libraryPath = "data/Library.txt";
+
+    Reader reader;
+
+    std::ifstream libraryFile(libraryPath);
+    std::string libraryContent((std::istreambuf_iterator<char>(libraryFile)), std::istreambuf_iterator<char>());
+    libraryFile.close();
+
+    reader.ShowBooks(libraryPath);
+}
+
 TEST_F(ReaderTestSuite, ShouldBorrowBookIfAvailable) {
     std::string BookName = "Przedwiosnie";
-    std::string libraryPath = "data/AvailableBook.txt";
-    std::string borrowedPath = "data/UnBorrowedBook.txt";
+    std::string libraryPath = "data/Library.txt";
+    std::string borrowedPath = "data/BorrowedBooks.txt";
 
-    std::ofstream clearFile(borrowedPath, std::ios::trunc);
-    clearFile.close();
+    if (fs::exists(borrowedPath)) {
+        fs::remove(borrowedPath);
+    }
+
+    Logger logger;
+    Reader reader;
+
+    std::ifstream libraryFileBefore(libraryPath);
+    std::string libraryContentBefore((std::istreambuf_iterator<char>(libraryFileBefore)), std::istreambuf_iterator<char>());
+    libraryFileBefore.close();
+    std::cout << "Library Content BEFORE borrowing:\n" << libraryContentBefore << "\n" << std::endl;
+    
+    std::ifstream borrowedFileBefore(borrowedPath);
+    std::string borrowedContentBefore((std::istreambuf_iterator<char>(borrowedFileBefore)), std::istreambuf_iterator<char>());
+    borrowedFileBefore.close();
+    std::cout << "Borrowed Content BEFORE borrowing:\n" << borrowedContentBefore << std::endl;
+
+    reader.BorrowBook(BookName, logger, libraryPath, borrowedPath);
+
+    std::ifstream libraryFile(libraryPath);
+    std::ifstream borrowedFile(borrowedPath);
+
+    std::string libraryContent((std::istreambuf_iterator<char>(libraryFile)), std::istreambuf_iterator<char>());
+    std::string borrowedContent((std::istreambuf_iterator<char>(borrowedFile)), std::istreambuf_iterator<char>());
+
+    libraryFile.close();
+    borrowedFile.close();
+
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+
+    std::cout << "Library Content AFTER:\n" << libraryContent << std::endl;
+    std::cout << "Borrowed Content AFTER:\n" << borrowedContent << std::endl;
+
+    ASSERT_TRUE(libraryContent.find("Przedwiosnie, Stefan Zeromski, 1924,not available") != std::string::npos);
+    ASSERT_EQ(libraryContent.find("Lalka, Boleslaw Prus, 1890, available"), std::string::npos);
+    ASSERT_EQ(libraryContent.find("Ferdydurke, Witold Gombrowicz, 1937, available"), std::string::npos);
+    ASSERT_EQ(libraryContent.find("Pan Tadeusz, Adam Mickiewicz, 1834, available"), std::string::npos);
+    ASSERT_EQ(libraryContent.find("Kamienie na szaniec, Aleksander Kaminski, 1943, available"), std::string::npos);
+
+    ASSERT_EQ(borrowedContent,expectedBorrowedContent);
+}
+
+
+TEST_F(ReaderTestSuite, ShouldNotBorrowBookIfNotAvailable) {
+    
+    std::string BookName = "Przedwiosnie";
+    std::string libraryPath = "data/Library.txt";
+    std::string borrowedPath = "data/BorrowedBooks.txt";
+
+    if (fs::exists(borrowedPath)) {
+        fs::remove(borrowedPath);
+    }
 
     Logger logger;
     Reader reader;
@@ -69,86 +145,86 @@ TEST_F(ReaderTestSuite, ShouldBorrowBookIfAvailable) {
 
     libraryFile.close();
     borrowedFile.close();
-//
-    std::string expectedLibraryContent = "Przedwiosnie, Stefan Zeromski, 1924,not available\n";
-    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-06\n";
 
-    std::cout << "Library Content:\n" << libraryContent << std::endl;
-    std::cout << "Borrowed Content:\n" << borrowedContent << std::endl;
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
 
-    ASSERT_EQ(libraryContent, expectedLibraryContent);
-    ASSERT_EQ(borrowedContent,expectedBorrowedContent);
+    std::cout << "Library Content AFTER borrowing:\n" << libraryContent << std::endl;
+    std::cout << "Borrowed Content AFTER borrowing:\n" << borrowedContent << std::endl;
+
+
+    std::cout << "startin test BORROWING N0T AVAILABLE BOOK\n" << std::endl;
+
+    EXPECT_THROW(reader.BorrowBook(BookName, logger, libraryPath, borrowedPath), std::runtime_error);
+
+    std::ifstream libraryFileNA(libraryPath);
+    std::ifstream borrowedFileNA(borrowedPath);
+    
+    std::string libraryContentNA((std::istreambuf_iterator<char>(libraryFileNA)), std::istreambuf_iterator<char>());
+    std::string borrowedContentNA((std::istreambuf_iterator<char>(borrowedFileNA)), std::istreambuf_iterator<char>());
+
+    libraryFileNA.close();
+    borrowedFileNA.close();
+
+    std::string expectedLibraryContentNA = "Przedwiosnie, Stefan Zeromski, 1924,not available\n"
+                                      "Lalka, Boleslaw Prus, 1890,available\n"
+                                      "Ferdydurke, Witold Gombrowicz, 1937,available\n"
+                                      "Pan Tadeusz, Adam Mickiewicz, 1834,available\n"
+                                      "Kamienie na szaniec, Aleksander Kaminski, 1943,available\n";
+;
+    std::string expectedBorrowedContentNA = "default, Przedwiosnie, 2025-04-09\n";
+
+    ASSERT_EQ(libraryContentNA, expectedLibraryContentNA);
+    ASSERT_EQ(borrowedContentNA,expectedBorrowedContentNA);
 }
 
 
-TEST_F(ReaderTestSuite, ShouldNotBorrowBookIfNotAvailable) {
-    std::string BookName = "Przedwiosnie";
-    std::string libraryPath = "data/NotAvailableBook.txt";
-    std::string borrowedPath = "data/BorrowedBook.txt";
+TEST_F(ReaderTestSuite, ShouldNotBorrowWhenWrongName) {
+    std::string BookName = "Przedw"; //incorrect bookname
+    std::string libraryPath = "data/Library.txt";
+    std::string borrowedPath = "data/BorrowedBooks.txt";
+
+
+    if (fs::exists(borrowedPath)) {
+        fs::remove(borrowedPath);
+    }
 
     Logger logger;
     Reader reader;
 
-    EXPECT_THROW(reader.BorrowBook(BookName, logger, libraryPath, borrowedPath), std::runtime_error);
+    std::ifstream libraryFileBefore(libraryPath);
+    std::string libraryContentBefore((std::istreambuf_iterator<char>(libraryFileBefore)), std::istreambuf_iterator<char>());
+    libraryFileBefore.close();
+    std::cout << "Library Content BEFORE borrowing:\n" << libraryContentBefore << "\n" << std::endl;
+    
+    std::ifstream borrowedFileBefore(borrowedPath);
+    std::string borrowedContentBefore((std::istreambuf_iterator<char>(borrowedFileBefore)), std::istreambuf_iterator<char>());
+    borrowedFileBefore.close();
+    std::cout << "Borrowed Content BEFORE borrowing:\n" << borrowedContentBefore << std::endl;
+
+    EXPECT_NO_THROW(reader.BorrowBook(BookName, logger, libraryPath, borrowedPath));
+
 
     std::ifstream libraryFile(libraryPath);
     std::ifstream borrowedFile(borrowedPath);
-    
+
     std::string libraryContent((std::istreambuf_iterator<char>(libraryFile)), std::istreambuf_iterator<char>());
     std::string borrowedContent((std::istreambuf_iterator<char>(borrowedFile)), std::istreambuf_iterator<char>());
 
     libraryFile.close();
     borrowedFile.close();
 
-    std::string expectedLibraryContent = "Przedwiosnie, Stefan Zeromski, 1924, not available";
-    std::string expectedBorrowedContent = "";
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
 
-    ASSERT_EQ(libraryContent, expectedLibraryContent);
-    ASSERT_EQ(borrowedContent,expectedBorrowedContent);
-}
+    std::cout << "Library Content AFTER:\n" << libraryContent << std::endl;
+    std::cout << "Borrowed Content AFTER:\n" << borrowedContent << std::endl;
 
-
-TEST_F(ReaderTestSuite, ShouldNotBorrowWhenWrongName) {
-    std::string BookName = "Przedw"; //incorrect bookname
-    std::string libraryPath = "data/AvailableBook.txt";
-    std::string borrowedPath = "data/BorrowedBook.txt";
-
-    Logger logger;
-    Reader reader;
-
-    //opening files
-    std::ifstream libraryFileBefore(libraryPath);
-    std::string libraryContentBefore((std::istreambuf_iterator<char>(libraryFileBefore)), std::istreambuf_iterator<char>());
-    libraryFileBefore.close();
-
-    std::ifstream borrowedFileBefore(borrowedPath);
-    std::string borrowedContentBefore((std::istreambuf_iterator<char>(borrowedFileBefore)), std::istreambuf_iterator<char>());
-    borrowedFileBefore.close();
-
-    std::cout << "Library Content BEFORE:\n" << libraryContentBefore << "\n" << std::endl;
-    std::cout << "Borrowed Content BEFORE:\n" << borrowedContentBefore << "\n" << std::endl;
-
-    EXPECT_NO_THROW(reader.BorrowBook(BookName, logger, libraryPath, borrowedPath));
-
-    //Reading file contents after a borrowing attempt.
-    std::ifstream libraryFileAFTER(libraryPath);
-    std::string libraryContentAFTER((std::istreambuf_iterator<char>(libraryFileAFTER)), std::istreambuf_iterator<char>());
-    libraryFileAFTER.close();
-
-    std::ifstream borrowedFileAFTER(borrowedPath);
-    std::string borrowedContentAFTER((std::istreambuf_iterator<char>(borrowedFileAFTER)), std::istreambuf_iterator<char>());
-    borrowedFileAFTER.close();
-
-    std::cout << "Library Content AFTER:\n" << libraryContentAFTER << "\n" << std::endl;
-    std::cout << "Borrowed Content AFTER:\n" << borrowedContentAFTER << "\n" << std::endl;
-
-    ASSERT_EQ(libraryContentBefore, libraryContentAFTER);
-    ASSERT_EQ(borrowedContentBefore, borrowedContentAFTER);
+    ASSERT_EQ(libraryContentBefore, libraryContent);
+    ASSERT_EQ(borrowedContentBefore, borrowedContent);
 }
 
 TEST_F(ReaderTestSuite, ShouldFindABook) {
     std::string BookName = "Przedwiosnie";
-    std::string libraryPath = "data/AvailableBook.txt";
+    std::string libraryPath = "data/Library.txt";
 
     Reader reader;
 
@@ -159,9 +235,10 @@ TEST_F(ReaderTestSuite, ShouldFindABook) {
     reader.SearchBook(BookName, libraryPath);
 }
 
+
 TEST_F(ReaderTestSuite, ShouldNotFindABook) {
     std::string BookName = "Przed";
-    std::string libraryPath = "data/AvailableBook.txt";
+    std::string libraryPath = "data/Library.txt";
 
     Reader reader;
 
@@ -172,26 +249,17 @@ TEST_F(ReaderTestSuite, ShouldNotFindABook) {
     EXPECT_THROW(reader.SearchBook(BookName, libraryPath), std::runtime_error);
 }
 
-
-TEST_F(ReaderTestSuite, ShouldShowBooks) {
-    std::string libraryPath = "data/AvailableBook.txt";
-
-    Reader reader;
-
-    std::ifstream libraryFile(libraryPath);
-    std::string libraryContent((std::istreambuf_iterator<char>(libraryFile)), std::istreambuf_iterator<char>());
-    libraryFile.close();
-
-    reader.ShowBooks(libraryPath);
-}
-
 TEST_F(ReaderTestSuite, ShouldReturnABook){
     std::string BookName = "Przedwiosnie";
-    std::string borrowedPath = "data/BorrowedBook.txt";
-    std::string borrowedPathTemp = "data/BorrowedBookTemp.txt";
-    std::string libraryPath = "data/NotAvailableBook.txt";
-    std::string libraryPathTemp = "data/NotAvailableBookTemp.txt";
-    
+    std::string libraryPath = "data/Library.txt";
+    std::string libraryPathTemp = "data/LibraryTemp.txt";
+    std::string borrowedPath = "data/BorrowedBooks.txt";
+    std::string borrowedPathTemp = "data/BorrowedBooksTemp.txt";
+
+
+    if (fs::exists(borrowedPath)) {
+        fs::remove(borrowedPath);
+    }
 
     Logger logger;
     Reader reader;
@@ -199,18 +267,35 @@ TEST_F(ReaderTestSuite, ShouldReturnABook){
     std::ifstream libraryFileBefore(libraryPath);
     std::string libraryContentBefore((std::istreambuf_iterator<char>(libraryFileBefore)), std::istreambuf_iterator<char>());
     libraryFileBefore.close();
-    std::cout << "Library Content BEFORE returning:\n" << libraryContentBefore << std::endl;
+    std::cout << "Library Content BEFORE borrowing:\n" << libraryContentBefore << "\n" << std::endl;
     
     std::ifstream borrowedFileBefore(borrowedPath);
     std::string borrowedContentBefore((std::istreambuf_iterator<char>(borrowedFileBefore)), std::istreambuf_iterator<char>());
     borrowedFileBefore.close();
-    std::cout << "Borrowed Content BEFORE returning:\n" << borrowedContentBefore << std::endl;
+    std::cout << "Borrowed Content BEFORE borrowing:\n" << borrowedContentBefore << std::endl;
 
-    EXPECT_NO_THROW(reader.ReturnBook(BookName, logger, borrowedPath, borrowedPathTemp, libraryPath, libraryPathTemp));
+    reader.BorrowBook(BookName, logger, libraryPath, borrowedPath);
+
+    std::ifstream libraryFile(libraryPath);
+    std::ifstream borrowedFile(borrowedPath);
+
+    std::string libraryContent((std::istreambuf_iterator<char>(libraryFile)), std::istreambuf_iterator<char>());
+    std::string borrowedContent((std::istreambuf_iterator<char>(borrowedFile)), std::istreambuf_iterator<char>());
+
+    libraryFile.close();
+    borrowedFile.close();
+    std::cout << "\n" << std::endl;
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+
+    std::cout << "Library Content AFTER:\n" << libraryContent << std::endl;
+    std::cout << "Borrowed Content AFTER:\n" << borrowedContent << std::endl;
+
+/////
+    EXPECT_NO_THROW(reader.ReturnBook(BookName, logger, libraryPath, borrowedPath, libraryPathTemp, borrowedPathTemp));
     
     std::ifstream libraryFileAfter(libraryPath);
     std::string libraryContentAfter((std::istreambuf_iterator<char>(libraryFileAfter)), std::istreambuf_iterator<char>());
-    libraryFileAfter.close();
+    libraryFileAfter.close(); 
     std::cout << "Library Content AFTER returning:\n" << libraryContentAfter << std::endl;
 
     std::ifstream borrowedFileAfter(borrowedPath);
@@ -221,5 +306,115 @@ TEST_F(ReaderTestSuite, ShouldReturnABook){
     ASSERT_EQ(borrowedContentBefore, borrowedContentAfter);
 }
 
-//should not return
+TEST_F(ReaderTestSuite, ShouldNotReturnABookWhenWrongTitle){
+    std::string BookName = "Przedwiosnie";
+    std::string BookNameReturn = "Przed";
+    std::string libraryPath = "data/Library.txt";
+    std::string libraryPathTemp = "data/LibraryTemp.txt";
+    std::string borrowedPath = "data/BorrowedBooks.txt";
+    std::string borrowedPathTemp = "data/BorrowedBooksTemp.txt";
+
+
+    if (fs::exists(borrowedPath)) {
+        fs::remove(borrowedPath);
+    }
+
+    Logger logger;
+    Reader reader;
+
+    std::ifstream libraryFileBefore(libraryPath);
+    std::string libraryContentBefore((std::istreambuf_iterator<char>(libraryFileBefore)), std::istreambuf_iterator<char>());
+    libraryFileBefore.close();
+    std::cout << "Library Content BEFORE borrowing:\n" << libraryContentBefore << "\n" << std::endl;
+    
+    std::ifstream borrowedFileBefore(borrowedPath);
+    std::string borrowedContentBefore((std::istreambuf_iterator<char>(borrowedFileBefore)), std::istreambuf_iterator<char>());
+    borrowedFileBefore.close();
+    std::cout << "Borrowed Content BEFORE borrowing:\n" << borrowedContentBefore << std::endl;
+
+    reader.BorrowBook(BookName, logger, libraryPath, borrowedPath);
+
+    std::ifstream libraryFile(libraryPath);
+    std::ifstream borrowedFile(borrowedPath);
+
+    std::string libraryContent((std::istreambuf_iterator<char>(libraryFile)), std::istreambuf_iterator<char>());
+    std::string borrowedContent((std::istreambuf_iterator<char>(borrowedFile)), std::istreambuf_iterator<char>());
+
+    libraryFile.close();
+    borrowedFile.close();
+    std::cout << "\n" << std::endl;
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+
+    std::cout << "Library Content AFTER:\n" << libraryContent << std::endl;
+    std::cout << "Borrowed Content AFTER:\n" << borrowedContent << std::endl;
+
+/////
+    EXPECT_THROW(reader.ReturnBook(BookNameReturn, logger, libraryPath, borrowedPath, libraryPathTemp, borrowedPathTemp), std::runtime_error);
+    
+    std::ifstream libraryFileAfter(libraryPath);
+    std::string libraryContentAfter((std::istreambuf_iterator<char>(libraryFileAfter)), std::istreambuf_iterator<char>());
+    libraryFileAfter.close(); 
+    std::cout << "Library Content AFTER returning:\n" << libraryContentAfter << std::endl;
+
+    std::ifstream borrowedFileAfter(borrowedPath);
+    std::string borrowedContentAfter((std::istreambuf_iterator<char>(borrowedFileAfter)), std::istreambuf_iterator<char>());
+    borrowedFileAfter.close();
+    std::cout << "Borrowed Content AFTER returning:\n" << borrowedContentAfter << std::endl;
+
+    std::string expectedLibraryContentWT = "Przedwiosnie, Stefan Zeromski, 1924,not available\n"
+                                      "Lalka, Boleslaw Prus, 1890,available\n"
+                                      "Ferdydurke, Witold Gombrowicz, 1937,available\n"
+                                      "Pan Tadeusz, Adam Mickiewicz, 1834,available\n"
+                                      "Kamienie na szaniec, Aleksander Kaminski, 1943,available\n";
+    std::string expectedBorrowedContentWT = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+
+    ASSERT_EQ(libraryContentAfter, expectedLibraryContentWT);
+    ASSERT_EQ(borrowedContentAfter, expectedBorrowedContentWT);
+}
+
+
+TEST_F(ReaderTestSuite, ShouldNotReturnABookWhenNotBorrowed){
+   
+    std::string BookName = "Przedwiosnie";
+    std::string libraryPath = "data/Library.txt";
+    std::string libraryPathTemp = "data/LibraryTemp.txt";
+    std::string borrowedPath = "data/BorrowedBooks.txt";
+    std::string borrowedPathTemp = "data/BorrowedBooksTemp.txt";
+
+
+    if (fs::exists(borrowedPath)) {
+        fs::remove(borrowedPath);
+    }
+    
+    std::ofstream createEmpty(borrowedPath, std::ios::trunc);
+    createEmpty.close();
+
+    Logger logger;
+    Reader reader;
+
+    std::ifstream libraryFileBefore(libraryPath);
+    std::string libraryContentBefore((std::istreambuf_iterator<char>(libraryFileBefore)), std::istreambuf_iterator<char>());
+    libraryFileBefore.close();
+    std::cout << "Library Content BEFORE borrowing:\n" << libraryContentBefore << "\n" << std::endl;
+    
+    std::ifstream borrowedFileBefore(borrowedPath);
+    std::string borrowedContentBefore((std::istreambuf_iterator<char>(borrowedFileBefore)), std::istreambuf_iterator<char>());
+    borrowedFileBefore.close();
+    std::cout << "Borrowed Content BEFORE borrowing:\n" << borrowedContentBefore << std::endl;
+
+  
+    EXPECT_THROW(reader.ReturnBook(BookName, logger, libraryPath, borrowedPath, libraryPathTemp, borrowedPathTemp), std::runtime_error);
+    
+    std::ifstream libraryFileAfter(libraryPath);
+    std::string libraryContentAfter((std::istreambuf_iterator<char>(libraryFileAfter)), std::istreambuf_iterator<char>());
+    libraryFileAfter.close(); 
+    std::cout << "Library Content AFTER returning:\n" << libraryContentAfter << std::endl;
+
+    std::ifstream borrowedFileAfter(borrowedPath);
+    std::string borrowedContentAfter((std::istreambuf_iterator<char>(borrowedFileAfter)), std::istreambuf_iterator<char>());
+    borrowedFileAfter.close();
+    std::cout << "Borrowed Content AFTER returning:\n" << borrowedContentAfter << std::endl;
+    ASSERT_EQ(libraryContentBefore, libraryContentAfter);
+    ASSERT_EQ(borrowedContentBefore, borrowedContentAfter);
+}
 
