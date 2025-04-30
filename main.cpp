@@ -62,8 +62,18 @@
                 std::cout << "\n";
                 break;
 
-            case 3:
-                log.LogIn(); 
+            case 3:{
+                std::string username, password;
+
+                std::cout << "Write your username: ";
+                std::cin.ignore();
+                std::getline(std::cin, username);
+
+                std::cout << "Write your password: ";
+                std::getline(std::cin, password);
+                
+                log.LogIn(username, password);
+                
                 
                 if (log.IsValidUser("users.txt")){
                     std::cout << "\nHello, " << log.getUsername() << "!" << std::endl;
@@ -77,12 +87,22 @@
                             std::cout << "\n";
 
                             switch (adminChoice) {
-                            case 'a':
-                                admin.AddBook();
+                            case 'a':{
+                                std::string title, author, status, libraryPath;
+                                std::cout << "Write the title: ";
+                                std::cin.ignore();
+                                std::getline(std::cin, title);
+                                std::cout << "Write the author: ";
+                                std::getline(std::cin, author);
+                                int year = admin.GetValidYear();
+                                admin.AddBook(title, author, year, status, libraryPath);
                                 break;
-
-                            case 'd':
-                                admin.DeleteBook();
+                            }
+                            case 'd':{
+                                std::string bookToDelete, libraryPath, libraryPathTemp;
+                                std::cout << "Enter the title of the book you want to delete: ";
+                                std::cin >> bookToDelete;
+                                admin.DeleteBook(bookToDelete, libraryPath, libraryPathTemp);}
                                 break;
 
                             case 'b':
@@ -114,21 +134,32 @@
                             std::cout << "\n";
 
 
-                            std::string username, password, firstname, lastname;
+                            std::string username, password, firstname, lastname, borrowedPath, UsersPath;
                             switch (librarianChoice){
-                                case 1:
-                                    admin.AddBook();
+                                case 1:{
+                                    std::string title, author, status, libraryPath;
+                                    std::cout << "Write the title: ";
+                                    std::cin.ignore();
+                                    std::getline(std::cin, title);
+                                    std::cout << "Write the author: ";
+                                    std::getline(std::cin, author);
+                                    int year = admin.GetValidYear();
+                                    //status = ", available";
+                                    admin.AddBook(title, author, year, status, libraryPath);
                                     break;
-
-                                case 2:
-                                    admin.DeleteBook();
+                                }
+                                case 2:{
+                                    std::string bookToDelete, libraryPath, libraryPathTemp;
+                                    std::cout << "Enter the title of the book you want to delete: ";
+                                    std::cin >> bookToDelete;
+                                    admin.DeleteBook(bookToDelete,libraryPath, libraryPathTemp);}
                                     break;
 
                                 case 3:                        
                                     std::cout << "Enter username: " << std::endl;
                                     std::cin >> username;
             
-                                    while (user.IsUsernameTaken(username)){
+                                    while (user.IsUsernameTaken(username, UsersPath)){
                                         std::cout << "Error. Username \"" << username << "\" is already taken." << std::endl;
                                         std::cout << "Enter username: " << std::endl;
                                         std::cin >> username;
@@ -140,31 +171,36 @@
                                     std::cin >> firstname;
                                     std::cout << "Enter last name: " << std::endl;
                                     std::cin >> lastname;
-                                    user.AddUser(username, password, firstname, lastname);
+                                    user.AddUser(username, password, firstname, lastname, UsersPath);
                                     break;
 
                                 case 4:
                                     std::cout << "Enter username you want to delete: " << std::endl;
                                     std::cin >> username;
-                                    user.DeleteUser(username);
+                                    user.DeleteUser(username, UsersPath);
                                     break;
 
                                 case 5:
-                                    user.DisplayUsers();
+                                    user.DisplayUsers(UsersPath);
                                     std::cout << "\n";
                                     break;
 
                                 case 6:
-                                    librarian.ListOfBorrowedBooks();
+                                    librarian.ListOfBorrowedBooks(borrowedPath);
                                     break;
                             
                                 case 7:
-                                    librarian.ListOfOverdueBooks();
-                                                  
-                                case 8:
-                                    admin.UpdateBook();
+                                    librarian.ListOfOverdueBooks(borrowedPath);
                                     break;
-                            
+                                                  
+                                case 8:{
+                                    std::string bookToBeChanged, libraryPath, libraryPathTemp;
+                                    std::cout << "Enter the title of a book to be changed: " << std::endl;
+                                    std::cin.ignore();
+                                    std::getline(std::cin, bookToBeChanged);
+                                    admin.UpdateBook(bookToBeChanged, libraryPath, libraryPathTemp);
+                                    break;
+                                }
                                 case 9:
                                     librarianScreen = false;
                                     break;
@@ -282,15 +318,15 @@
                     } 
                     else std::cout << "user not found" << std::endl;
                     break;
-                }
+                }   
+            }
             case 9:
                 mainScreen = false;
                 break;
             default:
                 std::cout << "Invalid option, please choose again." << std::endl;
                 break;
-            }
-        
+            }       
         }
         return 0;
     }

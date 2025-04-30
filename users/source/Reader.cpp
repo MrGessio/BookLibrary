@@ -25,7 +25,6 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::st
         title = trim(title);
         status = trim(status);
 
-       // std::cout << "title: " << title << ", bookTitle: " << bookTitle << std::endl;
         if(title == bookTitle){
             bookFound = true;
             std::cout << "current status: " << status << std::endl;
@@ -34,7 +33,7 @@ void Reader::BorrowBook(const std::string &bookTitle, Logger &log, const std::st
             } else status = "not available";
         }
 
-    tempFile << title << "," << author << "," << year << "," << status << std::endl;
+    tempFile << title << "," << author << "," << year << ", " << status << std::endl;
 
     }
 

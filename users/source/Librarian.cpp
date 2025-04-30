@@ -7,8 +7,8 @@
 #include "Librarian.h"
 
 
-void Librarian::ListOfBorrowedBooks(){
-    std::ifstream file ("borrowedBooks.txt");
+void Librarian::ListOfBorrowedBooks(const std::string &borrowedPath){
+    std::ifstream file (borrowedPath);
     std::cout << "\nList of borrowed books: " << std::endl;
 
     if(file.is_open()){
@@ -27,8 +27,8 @@ void Librarian::ListOfBorrowedBooks(){
 
 }
 
-void Librarian::ListOfOverdueBooks(){
-    std::ifstream file ("borrowedBooks.txt");
+void Librarian::ListOfOverdueBooks(const std::string &borrowedPath){
+    std::ifstream file (borrowedPath);
     std::cout << "\nList of overdued books: " << std::endl;
 
     if(!file.is_open()){
