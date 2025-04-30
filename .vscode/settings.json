@@ -68,6 +68,7 @@
         "any": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "filesystem": "cpp"
     }
 }

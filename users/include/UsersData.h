@@ -11,8 +11,6 @@ public:
     std::string getUserName() const;
     std::string getUserPassword() const;
 
-    std::string DataToSave();
-
 private:
     std::string firstName;
     std::string lastName;

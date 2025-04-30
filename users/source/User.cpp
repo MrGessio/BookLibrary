@@ -10,12 +10,13 @@
 
 extern std::fstream usersDoc;
 
-void User:: LoadUsers(){
+void User:: LoadUsers(const std::string &usersPath){
    m_users.clear(); //clears vector before loading data
-   std::fstream usersDoc("users.txt", std::ios::in); 
+   std::fstream usersDoc(usersPath, std::ios::in); 
 
     if(!usersDoc){
         std::cout << "Error, could not open the file" << std::endl;
+        throw std::runtime_error("Error: couldn't open the file");
         return;
     }
 
@@ -27,11 +28,12 @@ void User:: LoadUsers(){
     usersDoc.close();
 }
 
-void User:: SaveUsers(){
-    std::ofstream usersDoc("users.txt", std::ios::out);
+void User:: SaveUsers(const std::string &usersPath){
+    std::ofstream usersDoc(usersPath, std::ios::out);
 
     if(!usersDoc){
         std::cout << "Error. Could not open the file." << std::endl;
+        throw std::runtime_error("Error: couldn't open the file");
         return;
     }
 
@@ -43,18 +45,19 @@ void User:: SaveUsers(){
 }
 
 
-bool User:: IsUsernameTaken(const std::string &username){
-    LoadUsers();
+bool User:: IsUsernameTaken(const std::string &username, const std::string &usersPath){
+    LoadUsers(usersPath);
     auto it = std::find_if(m_users.begin(), m_users.end(), [&username](const UserInfo &user) {
         return user.username == username;
     });
     return it != m_users.end(); 
 }
 
-void User:: AddUser(const std::string &username, const std::string &password, const std::string &firstname, const std::string &lastname){
+void User:: AddUser(const std::string &username, const std::string &password, const std::string &firstname, const std::string &lastname, const std::string &usersPath){
 
-    if (IsUsernameTaken(username)){
+    if (IsUsernameTaken(username, usersPath)){
         std::cout << "Error. Username: " << username << " is already taken." << std::endl;
+        throw std::runtime_error("Error: Username is already taken");
         return;
     }
 
@@ -62,30 +65,32 @@ void User:: AddUser(const std::string &username, const std::string &password, co
     UserInfo newUser = {username, password, firstname, lastname};
     m_users.push_back(newUser);
 
-    SaveUsers(); //save the edited list
+    SaveUsers(usersPath); //save the edited list
 
     std::cout << "User named: " << username << " added correctly" << std::endl;
     
 }
 
-void User::DeleteUser(const std::string &username){
+void User::DeleteUser(const std::string &username, const std::string &usersPath){
 
-    LoadUsers();
+    LoadUsers(usersPath);
     auto it = std::find_if(m_users.begin(), m_users.end(), [&username](const UserInfo &user0){
         return user0.username == username;
     });
 
     if (it != m_users.end()){
         m_users.erase(it); //delete user from the list
-        SaveUsers();
+        SaveUsers(usersPath);
 
         std::cout << "User: " << username << " deleted correctly." << std::endl;
-    } else std::cout << "Error. User: " << username << " not found." << std::endl;
+    }   else {
+            std::cout << "Error. User: " << username << " not found." << std::endl;
+            throw std::runtime_error("Error: user not found");}
 
 }
 
-void User::DisplayUsers(){
-    LoadUsers();
+void User::DisplayUsers(const std::string &usersPath){
+    LoadUsers(usersPath);
     std::cout << "Number of users: " << m_users.size() << std::endl;
     if(m_users.empty()) {
         std::cout << "No users found." << std::endl; 

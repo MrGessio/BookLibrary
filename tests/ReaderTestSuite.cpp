@@ -95,17 +95,19 @@ TEST_F(ReaderTestSuite, ShouldBorrowBookIfAvailable) {
     libraryFile.close();
     borrowedFile.close();
 
-    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-18\n";
 
     std::cout << "Library Content AFTER:\n" << libraryContent << std::endl;
     std::cout << "Borrowed Content AFTER:\n" << borrowedContent << std::endl;
 
-    ASSERT_TRUE(libraryContent.find("Przedwiosnie, Stefan Zeromski, 1924,not available") != std::string::npos);
-    ASSERT_EQ(libraryContent.find("Lalka, Boleslaw Prus, 1890, available"), std::string::npos);
-    ASSERT_EQ(libraryContent.find("Ferdydurke, Witold Gombrowicz, 1937, available"), std::string::npos);
-    ASSERT_EQ(libraryContent.find("Pan Tadeusz, Adam Mickiewicz, 1834, available"), std::string::npos);
-    ASSERT_EQ(libraryContent.find("Kamienie na szaniec, Aleksander Kaminski, 1943, available"), std::string::npos);
+    std::string expectedContent = 
+    "Przedwiosnie, Stefan Zeromski, 1924, not available\n"
+    "Lalka, Boleslaw Prus, 1890, available\n"
+    "Ferdydurke, Witold Gombrowicz, 1937, available\n"
+    "Pan Tadeusz, Adam Mickiewicz, 1834, available\n"
+    "Kamienie na szaniec, Aleksander Kaminski, 1943, available\n";
 
+    ASSERT_EQ(libraryContent, expectedContent); 
     ASSERT_EQ(borrowedContent,expectedBorrowedContent);
 }
 
@@ -146,7 +148,7 @@ TEST_F(ReaderTestSuite, ShouldNotBorrowBookIfNotAvailable) {
     libraryFile.close();
     borrowedFile.close();
 
-    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-18\n";
 
     std::cout << "Library Content AFTER borrowing:\n" << libraryContent << std::endl;
     std::cout << "Borrowed Content AFTER borrowing:\n" << borrowedContent << std::endl;
@@ -165,13 +167,13 @@ TEST_F(ReaderTestSuite, ShouldNotBorrowBookIfNotAvailable) {
     libraryFileNA.close();
     borrowedFileNA.close();
 
-    std::string expectedLibraryContentNA = "Przedwiosnie, Stefan Zeromski, 1924,not available\n"
-                                      "Lalka, Boleslaw Prus, 1890,available\n"
-                                      "Ferdydurke, Witold Gombrowicz, 1937,available\n"
-                                      "Pan Tadeusz, Adam Mickiewicz, 1834,available\n"
-                                      "Kamienie na szaniec, Aleksander Kaminski, 1943,available\n";
+    std::string expectedLibraryContentNA = "Przedwiosnie, Stefan Zeromski, 1924, not available\n"
+                                      "Lalka, Boleslaw Prus, 1890, available\n"
+                                      "Ferdydurke, Witold Gombrowicz, 1937, available\n"
+                                      "Pan Tadeusz, Adam Mickiewicz, 1834, available\n"
+                                      "Kamienie na szaniec, Aleksander Kaminski, 1943, available\n";
 ;
-    std::string expectedBorrowedContentNA = "default, Przedwiosnie, 2025-04-09\n";
+    std::string expectedBorrowedContentNA = "default, Przedwiosnie, 2025-04-18\n";
 
     ASSERT_EQ(libraryContentNA, expectedLibraryContentNA);
     ASSERT_EQ(borrowedContentNA,expectedBorrowedContentNA);
@@ -213,7 +215,7 @@ TEST_F(ReaderTestSuite, ShouldNotBorrowWhenWrongName) {
     libraryFile.close();
     borrowedFile.close();
 
-    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-18\n";
 
     std::cout << "Library Content AFTER:\n" << libraryContent << std::endl;
     std::cout << "Borrowed Content AFTER:\n" << borrowedContent << std::endl;
@@ -285,7 +287,7 @@ TEST_F(ReaderTestSuite, ShouldReturnABook){
     libraryFile.close();
     borrowedFile.close();
     std::cout << "\n" << std::endl;
-    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-18\n";
 
     std::cout << "Library Content AFTER:\n" << libraryContent << std::endl;
     std::cout << "Borrowed Content AFTER:\n" << borrowedContent << std::endl;
@@ -343,7 +345,7 @@ TEST_F(ReaderTestSuite, ShouldNotReturnABookWhenWrongTitle){
     libraryFile.close();
     borrowedFile.close();
     std::cout << "\n" << std::endl;
-    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+    std::string expectedBorrowedContent = logger.getUsername() + ", Przedwiosnie, 2025-04-18\n";
 
     std::cout << "Library Content AFTER:\n" << libraryContent << std::endl;
     std::cout << "Borrowed Content AFTER:\n" << borrowedContent << std::endl;
@@ -361,12 +363,12 @@ TEST_F(ReaderTestSuite, ShouldNotReturnABookWhenWrongTitle){
     borrowedFileAfter.close();
     std::cout << "Borrowed Content AFTER returning:\n" << borrowedContentAfter << std::endl;
 
-    std::string expectedLibraryContentWT = "Przedwiosnie, Stefan Zeromski, 1924,not available\n"
-                                      "Lalka, Boleslaw Prus, 1890,available\n"
-                                      "Ferdydurke, Witold Gombrowicz, 1937,available\n"
-                                      "Pan Tadeusz, Adam Mickiewicz, 1834,available\n"
-                                      "Kamienie na szaniec, Aleksander Kaminski, 1943,available\n";
-    std::string expectedBorrowedContentWT = logger.getUsername() + ", Przedwiosnie, 2025-04-09\n";
+    std::string expectedLibraryContentWT = "Przedwiosnie, Stefan Zeromski, 1924, not available\n"
+                                      "Lalka, Boleslaw Prus, 1890, available\n"
+                                      "Ferdydurke, Witold Gombrowicz, 1937, available\n"
+                                      "Pan Tadeusz, Adam Mickiewicz, 1834, available\n"
+                                      "Kamienie na szaniec, Aleksander Kaminski, 1943, available\n";
+    std::string expectedBorrowedContentWT = logger.getUsername() + ", Przedwiosnie, 2025-04-18\n";
 
     ASSERT_EQ(libraryContentAfter, expectedLibraryContentWT);
     ASSERT_EQ(borrowedContentAfter, expectedBorrowedContentWT);

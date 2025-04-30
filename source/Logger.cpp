@@ -3,11 +3,9 @@
 #include <sstream>
 #include <fstream>
 
-void Logger::LogIn(){
-    std::cout << "Write your username: ";
-    std::cin >> username;
-    std::cout << "Write your password: ";
-    std::cin >> password;
+void Logger::LogIn(const std::string &u, const std::string &p){
+    username = u;
+    password = p;
 }
 
 std::string Logger::getUsername() {
