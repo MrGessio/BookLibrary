@@ -6,8 +6,8 @@
 
 class Admin: public Librarian{
 public:
-    void AddBook(const std::string &title, const std::string &author, int year, const std::string &status, const std::string &libraryPath);
-    void DeleteBook(const std::string &bookToDelete, const std::string &libraryPath, const std::string &libraryPathTemp);
-    void UpdateBook(const std::string &bookToBeChanged, const std::string &libraryPath, const std::string &libraryPathTemp);
+    void AddBook(const std::string &title, const std::string &author, int year, const std::string &status, const std::string &libraryPath = "library.txt");
+    void DeleteBook(const std::string &bookToDelete, const std::string &libraryPath = "library.txt", const std::string &libraryPathTemp = "libraryTemp.txt");
+    void UpdateBook(const std::string &bookToBeChanged, const std::string &libraryPath = "library.txt", const std::string &libraryPathTemp = "libraryTemp.txt");
     int GetValidYear();
 };

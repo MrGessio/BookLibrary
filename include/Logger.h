@@ -12,7 +12,7 @@ public:
     void LogIn(const std::string &u, const std::string &p);
     std::string getUsername();
     std::string getPassword();
-    bool IsValidUser(const std::string& userfile);
+    bool IsValidUser(const std::string& userfile = "users.txt");
 
     
 private:

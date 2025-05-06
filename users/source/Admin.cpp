@@ -72,10 +72,10 @@ void Admin::DeleteBook(const std::string& bookToDelete, const std::string &libra
 }
 
 void Admin:: UpdateBook(const std::string& bookToBeChanged, const std::string& libraryPath, const std::string& libraryPathTemp) {
-    libraryDoc.open(libraryPath, std::ios::in);
-    std::fstream tempFile(libraryPathTemp, std::ios::out);
+    std::ifstream libraryFile(libraryPath);
+    std::ofstream tempFile(libraryPathTemp);
 
-    if(!libraryDoc.is_open() || !tempFile.is_open()){
+    if(!libraryFile.is_open() || !tempFile.is_open()){
        std::cout << "Error opening files." << std::endl;
        return;
     }
@@ -83,7 +83,7 @@ void Admin:: UpdateBook(const std::string& bookToBeChanged, const std::string& l
        int year;
 
        bool foundToChange = false;
-       while (std::getline(libraryDoc, line)){
+       while (std::getline(libraryFile, line)){
            std::istringstream lineStream(line);
            std::getline(lineStream, title, ',');
            std::getline(lineStream, author, ',');
@@ -97,7 +97,7 @@ void Admin:: UpdateBook(const std::string& bookToBeChanged, const std::string& l
            }
            tempFile << line << std::endl;
        }
-       libraryDoc.close();
+       libraryFile.close();
        tempFile.close();
 
        if (std::remove(libraryPath.c_str()) == 0 && std::rename(libraryPathTemp.c_str(), libraryPath.c_str()) == 0){
