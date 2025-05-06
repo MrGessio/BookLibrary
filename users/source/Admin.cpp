@@ -71,16 +71,16 @@ void Admin::DeleteBook(const std::string& bookToDelete, const std::string &libra
     }
 }
 
-void Admin:: UpdateBook(const std::string& bookToBeChanged, const std::string& libraryPath, const std::string& libraryPathTemp) {
+int Admin:: UpdateBook(const std::string& bookToBeChanged, const std::string& libraryPath, const std::string& libraryPathTemp) {
     std::ifstream libraryFile(libraryPath);
     std::ofstream tempFile(libraryPathTemp);
 
     if(!libraryFile.is_open() || !tempFile.is_open()){
        std::cout << "Error opening files." << std::endl;
-       return;
+       return 0;
     }
        std::string line, title, author;
-       int year;
+       int year, change;
 
        bool foundToChange = false;
        while (std::getline(libraryFile, line)){
@@ -100,10 +100,12 @@ void Admin:: UpdateBook(const std::string& bookToBeChanged, const std::string& l
        libraryFile.close();
        tempFile.close();
 
-       if (std::remove(libraryPath.c_str()) == 0 && std::rename(libraryPathTemp.c_str(), libraryPath.c_str()) == 0){
-            AddBook(title, author, year, ", available", libraryPath);
-       }
-
-    if(!foundToChange) std::cout << "Book not found." << std::endl;
+       if(foundToChange) {
+       
+         if (std::remove(libraryPath.c_str()) == 0 && std::rename(libraryPathTemp.c_str(), libraryPath.c_str()) == 0){
+        return 1;
+            }
+        }      
+        return 0;
 }
 

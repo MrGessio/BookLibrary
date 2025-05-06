@@ -11,7 +11,6 @@
 extern std::fstream usersDoc;
 
 void User:: LoadUsers(const std::string &usersPath){
-    std::cout << "TESTING BUGS " << usersPath << std::endl;
    m_users.clear(); //clears vector before loading data
    std::fstream usersDoc(usersPath, std::ios::in); 
    
