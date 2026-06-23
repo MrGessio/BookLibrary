@@ -13,7 +13,7 @@ extern std::fstream usersDoc;
 void User:: LoadUsers(const std::string &usersPath){
    m_users.clear(); //clears vector before loading data
    std::fstream usersDoc(usersPath, std::ios::in); 
-
+   
     if(!usersDoc){
         std::cout << "Error, could not open the file" << std::endl;
         throw std::runtime_error("Error: couldn't open the file");
